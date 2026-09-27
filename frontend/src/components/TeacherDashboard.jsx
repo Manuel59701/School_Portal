@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  GraduationCap, 
   UploadCloud, 
-  FileSpreadsheet, 
   Check, 
   AlertCircle, 
   Edit3, 
@@ -15,30 +13,30 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import Crea8orzLogo from './Crea8orzLogo';
 
 export default function TeacherDashboard({ user, onLogout }) {
-  const [selectedClass, setSelectedClass] = useState('SSS 2 Sapphire (Science)');
-  const [selectedSubject, setSelectedSubject] = useState('Physics');
+  const [selectedClass, setSelectedClass] = useState('SSS 2 Sapphire (Tech/Science)');
+  const [selectedSubject, setSelectedSubject] = useState('Physics & Computer Science');
   const [selectedTerm, setSelectedTerm] = useState('Second Term 2025/2026');
   
   // OCR / Snapshot Upload state
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [ocrStatus, setOcrStatus] = useState(null); // 'processing', 'success', null
+  const [ocrStatus, setOcrStatus] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(null);
 
-  // Editable Student Scores List
+  // Editable Student Scores List for Nigerian Students
   const [scoresList, setScoresList] = useState([
-    { id: 1, name: "Tariq Emmanuel Johnson", admissionNo: "STU/2026/0142", ca: 27, exam: 62, total: 89, grade: "A1", remarks: "Excellent" },
-    { id: 2, name: "Amina Zainab Usman", admissionNo: "STU/2026/0219", ca: 28, exam: 63, total: 91, grade: "A1", remarks: "Outstanding" },
-    { id: 3, name: "David Chukwuma Okafor", admissionNo: "STU/2026/0105", ca: 22, exam: 52, total: 74, grade: "B2", remarks: "Very Good" },
-    { id: 4, name: "Khadija Mustapha", admissionNo: "STU/2026/0188", ca: 24, exam: 56, total: 80, grade: "A1", remarks: "Excellent" },
-    { id: 5, name: "Michael Temitope Adeleke", admissionNo: "STU/2026/0133", ca: 20, exam: 48, total: 68, grade: "B3", remarks: "Good" }
+    { id: 1, name: "Tariq Emmanuel Johnson", admissionNo: "CR8/2026/0142", ca: 27, exam: 62, total: 89, grade: "A1", remarks: "Distinction in Coding & Physics" },
+    { id: 2, name: "Amina Zainab Usman", admissionNo: "CR8/2026/0219", ca: 28, exam: 63, total: 91, grade: "A1", remarks: "Exemplary Academic Diligence" },
+    { id: 3, name: "David Chukwuma Okafor", admissionNo: "CR8/2026/0105", ca: 22, exam: 52, total: 74, grade: "B2", remarks: "Very Good Problem Solver" },
+    { id: 4, name: "Khadija Mustapha", admissionNo: "CR8/2026/0188", ca: 24, exam: 56, total: 80, grade: "A1", remarks: "Exceptional Analytical Mind" },
+    { id: 5, name: "Michael Temitope Adeleke", admissionNo: "CR8/2026/0133", ca: 20, exam: 48, total: 68, grade: "B3", remarks: "Good Practical Participation" }
   ]);
 
   const [notification, setNotification] = useState('');
 
-  // Handle score change
   const handleScoreChange = (id, field, value) => {
     const num = Math.min(field === 'ca' ? 30 : 70, Math.max(0, Number(value) || 0));
     setScoresList(prev => prev.map(item => {
@@ -48,7 +46,7 @@ export default function TeacherDashboard({ user, onLogout }) {
         const total = ca + exam;
         let grade = 'F9';
         let remarks = 'Fail';
-        if (total >= 75) { grade = 'A1'; remarks = 'Excellent'; }
+        if (total >= 75) { grade = 'A1'; remarks = 'Distinction'; }
         else if (total >= 70) { grade = 'B2'; remarks = 'Very Good'; }
         else if (total >= 65) { grade = 'B3'; remarks = 'Good'; }
         else if (total >= 50) { grade = 'C4'; remarks = 'Credit'; }
@@ -60,7 +58,6 @@ export default function TeacherDashboard({ user, onLogout }) {
     }));
   };
 
-  // Simulate OCR snapshot upload and automated structure conversion
   const handleFileDrop = (e) => {
     e.preventDefault();
     setDragActive(false);
@@ -76,29 +73,26 @@ export default function TeacherDashboard({ user, onLogout }) {
       setUploading(true);
       setOcrStatus('processing');
 
-      // Emulate backend OCR image recognition & structured parsing
       setTimeout(() => {
         setUploading(false);
         setOcrStatus('success');
         
-        // Add parsed student rows converted from the uploaded result sheet image
         setScoresList(prev => [
           ...prev,
-          { id: 6, name: "Blessing Ifeoma Nnamdi", admissionNo: "STU/2026/0154", ca: 26, exam: 58, total: 84, grade: "A1", remarks: "Scanned & Verified" },
-          { id: 7, name: "Faruq Al-Hassan", admissionNo: "STU/2026/0167", ca: 23, exam: 51, total: 74, grade: "B2", remarks: "Scanned & Verified" }
+          { id: 6, name: "Blessing Ifeoma Nnamdi", admissionNo: "CR8/2026/0154", ca: 26, exam: 58, total: 84, grade: "A1", remarks: "OCR Scanned & Verified" },
+          { id: 7, name: "Faruq Al-Hassan", admissionNo: "CR8/2026/0167", ca: 23, exam: 51, total: 74, grade: "B2", remarks: "OCR Scanned & Verified" }
         ]);
 
-        confetti({ particleCount: 50, spread: 60 });
-        setNotification('Snapshot converted successfully! Parsed rows highlighted below for your review.');
+        confetti({ particleCount: 50, spread: 60, colors: ['#003024', '#A8F044'] });
+        setNotification('Snapshot converted successfully! Parsed Nigerian student rows populated below for review.');
         setTimeout(() => setNotification(''), 6000);
-      }, 2200);
+      }, 2000);
     };
     reader.readAsDataURL(file);
   };
 
   const handleSaveResults = async () => {
     try {
-      // Attempt backend PHP sync
       await fetch('/api/teacher/results.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -113,31 +107,23 @@ export default function TeacherDashboard({ user, onLogout }) {
       // Offline fallback
     }
 
-    localStorage.setItem(`results_${selectedClass}_${selectedSubject}`, JSON.stringify(scoresList));
-    setNotification('All student results successfully saved and synced with school registry!');
+    localStorage.setItem(`crea8orz_results_${selectedClass}_${selectedSubject}`, JSON.stringify(scoresList));
+    setNotification('All student results successfully saved and synced with Crea8orz Academy registry!');
     setTimeout(() => setNotification(''), 5000);
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
       
       {/* Top Bar */}
-      <nav style={{ backgroundColor: 'white', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-              <Layers size={22} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '1.1rem', color: '#0f172a' }}>ST. AUGUSTINE ACADEMY</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Class Teacher Assessment Suite</div>
-            </div>
-          </div>
+      <nav style={{ backgroundColor: 'white', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '72px' }}>
+          <Crea8orzLogo size={36} showMotto={false} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#0f172a' }}>{user?.name || "Dr. Sarah Adebayo"}</div>
-              <div style={{ fontSize: '0.8rem', color: '#64748b' }}>Assigned Class Master • Physics & Maths</div>
+              <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#003024' }}>{user?.name || "Dr. Sarah Adebayo"}</div>
+              <div style={{ fontSize: '0.8rem', color: '#5e7970' }}>Class Master • Senior Secondary Physics</div>
             </div>
             <button 
               onClick={onLogout}
@@ -157,13 +143,13 @@ export default function TeacherDashboard({ user, onLogout }) {
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
             <div>
-              <h1 style={{ fontSize: '2rem', color: '#0f172a', marginBottom: '4px' }}>Result Submission & Grading</h1>
-              <p style={{ color: '#64748b', fontSize: '0.95rem' }}>Enter Continuous Assessment (CA) and Examination marks directly or upload snapshot result sheets</p>
+              <h1 style={{ fontSize: '2rem', color: '#003024', marginBottom: '4px' }}>Result Submission & Grading</h1>
+              <p style={{ color: '#5e7970', fontSize: '0.95rem' }}>Enter Continuous Assessment (CA) and Examination marks directly or upload snapshot result sheets</p>
             </div>
 
             <button 
               onClick={handleSaveResults}
-              className="btn btn-primary"
+              className="btn btn-lime"
               style={{ padding: '12px 24px', fontSize: '1rem' }}
             >
               <Save size={18} /> Save & Finalize Results
@@ -171,48 +157,48 @@ export default function TeacherDashboard({ user, onLogout }) {
           </div>
 
           {notification && (
-            <div style={{ padding: '14px 20px', backgroundColor: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '12px', color: '#065f46', fontSize: '0.95rem', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <CheckCircle2 size={20} color="#10b981" />
+            <div style={{ padding: '14px 20px', backgroundColor: 'rgba(168, 240, 68, 0.2)', border: '1px solid #A8F044', borderRadius: '12px', color: '#003024', fontSize: '0.95rem', fontWeight: 600, marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <CheckCircle2 size={20} color="#003024" />
               <span>{notification}</span>
             </div>
           )}
 
           {/* Filtering Bar */}
-          <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #e2e8f0', marginBottom: '32px', boxShadow: 'var(--shadow-sm)' }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #e2e8e4', marginBottom: '32px', boxShadow: 'var(--shadow-sm)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>Assigned Class</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '8px' }}>Assigned Class Arm</label>
                 <select 
                   value={selectedClass} 
                   onChange={(e) => setSelectedClass(e.target.value)}
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontWeight: 600, color: '#0f172a', outline: 'none' }}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5d0', fontWeight: 700, color: '#003024', outline: 'none' }}
                 >
-                  <option value="SSS 2 Sapphire (Science)">SSS 2 Sapphire (Science)</option>
+                  <option value="SSS 2 Sapphire (Tech/Science)">SSS 2 Sapphire (Tech/Science)</option>
                   <option value="JSS 2 Gold">JSS 2 Gold</option>
                   <option value="Primary 4 Emerald">Primary 4 Emerald</option>
                 </select>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>Subject</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '8px' }}>Subject Course</label>
                 <select 
                   value={selectedSubject} 
                   onChange={(e) => setSelectedSubject(e.target.value)}
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontWeight: 600, color: '#0f172a', outline: 'none' }}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5d0', fontWeight: 700, color: '#003024', outline: 'none' }}
                 >
-                  <option value="Physics">Physics (PHY 201)</option>
-                  <option value="Mathematics">Mathematics (MTH 201)</option>
-                  <option value="Chemistry">Chemistry (CHM 201)</option>
-                  <option value="English Language">English Language</option>
+                  <option value="Physics & Computer Science">Physics & Computer Science</option>
+                  <option value="Mathematics">General Mathematics</option>
+                  <option value="Chemistry">Chemistry</option>
+                  <option value="English Studies">English Studies</option>
                 </select>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>Academic Term</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '8px' }}>Academic Term</label>
                 <select 
                   value={selectedTerm} 
                   onChange={(e) => setSelectedTerm(e.target.value)}
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontWeight: 600, color: '#0f172a', outline: 'none' }}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5d0', fontWeight: 700, color: '#003024', outline: 'none' }}
                 >
                   <option value="Second Term 2025/2026">Second Term 2025/2026</option>
                   <option value="First Term 2025/2026">First Term 2025/2026</option>
@@ -221,24 +207,24 @@ export default function TeacherDashboard({ user, onLogout }) {
             </div>
           </div>
 
-          {/* Milestone 1 Feature: Snapshot / OCR Upload Zone */}
-          <div style={{ borderRadius: '18px', padding: '28px', border: '2px dashed #93c5fd', marginBottom: '32px', textAlign: 'center', transition: 'all 0.2s', backgroundColor: dragActive ? '#eff6ff' : '#ffffff' }}
+          {/* OCR / Snapshot Upload Zone with Brand Theme */}
+          <div style={{ borderRadius: '18px', padding: '32px 28px', border: '2px dashed #003024', marginBottom: '32px', textAlign: 'center', transition: 'all 0.2s', backgroundColor: dragActive ? 'rgba(168, 240, 68, 0.2)' : '#ffffff' }}
                onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
                onDragLeave={() => setDragActive(false)}
                onDrop={handleFileDrop}>
             
             <div style={{ maxWidth: '580px', margin: '0 auto' }}>
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb', margin: '0 auto 16px auto' }}>
+              <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#003024', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A8F044', margin: '0 auto 16px auto' }}>
                 <Camera size={28} />
               </div>
-              <h3 style={{ fontSize: '1.25rem', color: '#0f172a', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '1.3rem', color: '#003024', fontWeight: 800, marginBottom: '8px' }}>
                 Upload Result Sheet Photo or Scanned Document
               </h3>
-              <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '16px' }}>
-                Our automated Optical Recognition (OCR) engine converts your paper grading sheet directly into editable student entries.
+              <p style={{ color: '#5e7970', fontSize: '0.92rem', marginBottom: '18px' }}>
+                Crea8orz OCR image recognition engine automatically extracts student Continuous Assessment and Examination columns into structured entries.
               </p>
 
-              <label className="btn btn-outline" style={{ cursor: 'pointer', display: 'inline-flex', padding: '10px 20px' }}>
+              <label className="btn btn-outline" style={{ cursor: 'pointer', display: 'inline-flex', padding: '10px 22px' }}>
                 <UploadCloud size={18} />
                 Browse Photo / Result Sheet
                 <input 
@@ -250,47 +236,47 @@ export default function TeacherDashboard({ user, onLogout }) {
               </label>
 
               {uploading && (
-                <div style={{ marginTop: '20px', color: '#2563eb', fontWeight: 600, fontSize: '0.92rem' }}>
-                  Processing snapshot image through Optical Character Recognition... Please wait.
+                <div style={{ marginTop: '20px', color: '#003024', fontWeight: 700, fontSize: '0.95rem' }}>
+                  Processing image through Crea8orz OCR engine... Please wait.
                 </div>
               )}
 
               {ocrStatus === 'success' && (
-                <div style={{ marginTop: '16px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: '#dcfce7', borderRadius: '20px', color: '#15803d', fontSize: '0.85rem', fontWeight: 600 }}>
-                  <Check size={16} /> Recognition Complete: Structured result entries populated into the gradebook below.
+                <div style={{ marginTop: '16px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 18px', backgroundColor: 'rgba(168, 240, 68, 0.3)', borderRadius: '20px', color: '#003024', fontSize: '0.88rem', fontWeight: 800 }}>
+                  <Check size={16} /> Recognition Complete: Student records populated into the table below.
                 </div>
               )}
             </div>
           </div>
 
           {/* Interactive Gradebook Table */}
-          <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '28px', border: '1px solid #e2e8f0', boxShadow: 'var(--shadow-md)' }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '28px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-md)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <div>
-                <h3 style={{ fontSize: '1.25rem', color: '#0f172a' }}>Student Continuous Assessment & Exam Roster</h3>
-                <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Showing {scoresList.length} enrolled students in {selectedClass}</span>
+                <h3 style={{ fontSize: '1.25rem', color: '#003024', fontWeight: 800 }}>Student Assessment & Exam Roster</h3>
+                <span style={{ fontSize: '0.85rem', color: '#5e7970' }}>Showing {scoresList.length} enrolled students in {selectedClass}</span>
               </div>
-              <span className="badge badge-primary">Form Direct Entry Active</span>
+              <span className="badge badge-lime">Form Direct Entry Active</span>
             </div>
 
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem' }}>
                 <thead>
-                  <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#475569' }}>
-                    <th style={{ padding: '14px 16px' }}>Admission No</th>
-                    <th style={{ padding: '14px 16px' }}>Student Name</th>
+                  <tr style={{ backgroundColor: '#003024', color: 'white' }}>
+                    <th style={{ padding: '14px 16px', borderTopLeftRadius: '8px' }}>Admission No</th>
+                    <th style={{ padding: '14px 16px' }}>Student Full Name</th>
                     <th style={{ padding: '14px 16px', textAlign: 'center', width: '130px' }}>CA Score (30)</th>
                     <th style={{ padding: '14px 16px', textAlign: 'center', width: '130px' }}>Exam (70)</th>
                     <th style={{ padding: '14px 16px', textAlign: 'center', width: '120px' }}>Total (100)</th>
                     <th style={{ padding: '14px 16px', textAlign: 'center', width: '90px' }}>Grade</th>
-                    <th style={{ padding: '14px 16px' }}>Teacher Observation</th>
+                    <th style={{ padding: '14px 16px', borderTopRightRadius: '8px' }}>Teacher Observation</th>
                   </tr>
                 </thead>
                 <tbody>
                   {scoresList.map((st) => (
-                    <tr key={st.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '12px 16px', fontWeight: 600, color: '#64748b' }}>{st.admissionNo}</td>
-                      <td style={{ padding: '12px 16px', fontWeight: 700, color: '#0f172a' }}>{st.name}</td>
+                    <tr key={st.id} style={{ borderBottom: '1px solid #e2e8e4' }}>
+                      <td style={{ padding: '12px 16px', fontWeight: 700, color: '#5e7970' }}>{st.admissionNo}</td>
+                      <td style={{ padding: '12px 16px', fontWeight: 800, color: '#003024' }}>{st.name}</td>
                       
                       {/* CA Input */}
                       <td style={{ padding: '12px 16px', textAlign: 'center' }}>
@@ -304,7 +290,7 @@ export default function TeacherDashboard({ user, onLogout }) {
                             width: '80px',
                             padding: '8px 10px',
                             borderRadius: '8px',
-                            border: '1px solid #cbd5e1',
+                            border: '1px solid #cbd5d0',
                             textAlign: 'center',
                             fontWeight: 700,
                             fontSize: '0.95rem',
@@ -325,7 +311,7 @@ export default function TeacherDashboard({ user, onLogout }) {
                             width: '80px',
                             padding: '8px 10px',
                             borderRadius: '8px',
-                            border: '1px solid #cbd5e1',
+                            border: '1px solid #cbd5d0',
                             textAlign: 'center',
                             fontWeight: 700,
                             fontSize: '0.95rem',
@@ -335,7 +321,7 @@ export default function TeacherDashboard({ user, onLogout }) {
                       </td>
 
                       {/* Total */}
-                      <td style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 800, color: '#0f172a', fontSize: '1rem' }}>
+                      <td style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 800, color: '#003024', fontSize: '1rem' }}>
                         {st.total}
                       </td>
 
@@ -344,16 +330,16 @@ export default function TeacherDashboard({ user, onLogout }) {
                         <span style={{ 
                           padding: '4px 10px', 
                           borderRadius: '6px', 
-                          fontWeight: 700, 
+                          fontWeight: 800, 
                           fontSize: '0.85rem',
-                          backgroundColor: st.grade === 'A1' ? '#d1fae5' : '#e0e7ff',
-                          color: st.grade === 'A1' ? '#065f46' : '#3730a3'
+                          backgroundColor: st.grade === 'A1' ? '#A8F044' : '#d1fae5',
+                          color: '#003024'
                         }}>
                           {st.grade}
                         </span>
                       </td>
 
-                      <td style={{ padding: '12px 16px', color: '#475569', fontSize: '0.85rem' }}>
+                      <td style={{ padding: '12px 16px', color: '#334d44', fontSize: '0.85rem' }}>
                         {st.remarks}
                       </td>
                     </tr>
@@ -363,7 +349,7 @@ export default function TeacherDashboard({ user, onLogout }) {
             </div>
 
             <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={handleSaveResults} className="btn btn-primary" style={{ padding: '12px 24px' }}>
+              <button onClick={handleSaveResults} className="btn btn-lime" style={{ padding: '12px 26px' }}>
                 <Save size={18} /> Commit Gradebook Entries
               </button>
             </div>

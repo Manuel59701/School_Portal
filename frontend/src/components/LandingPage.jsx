@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  GraduationCap, 
   ChevronRight, 
   ChevronLeft, 
   BookOpen, 
@@ -13,12 +12,11 @@ import {
   Mail, 
   Phone, 
   MapPin, 
-  Sparkles,
-  ExternalLink
+  Sparkles
 } from 'lucide-react';
-import { INITIAL_ANNOUNCEMENTS } from '../mockData';
+import Crea8orzLogo from './Crea8orzLogo';
 
-// Imported photos generated specifically for this school portal
+// Imported photos generated with Nigerian students wearing Crea8orz forest green & lime uniforms
 import hero1 from '../assets/images/hero1.jpg';
 import hero2 from '../assets/images/hero2.jpg';
 import hero3 from '../assets/images/hero3.jpg';
@@ -28,35 +26,35 @@ export default function LandingPage({ onNavigateLogin }) {
   const slides = [
     {
       image: hero1,
-      badge: "Inspiring Academic Excellence",
-      title: "Nurturing Tomorrow's Global Leaders Today",
-      subtitle: "From Nursery foundational steps to Senior Secondary graduation, we provide world-class holistic education and character building.",
+      badge: "Innova8 • Crea8 • Eleva8",
+      title: "Nurturing Tomorrow's Creative African Visionaries",
+      subtitle: "From Nursery foundations to Senior Secondary, Crea8orz Academy empowers Nigerian scholars with tech innovation, character, and academic mastery.",
       cta: "Explore Our Programs",
       tag: "Admissions Open 2026/2027"
     },
     {
       image: hero2,
-      badge: "Modern Interactive Learning",
-      title: "Interactive Classrooms Equipped for Tomorrow",
-      subtitle: "Smart technology integration, inquiry-driven pedagogy, and dedicated educators committed to every child's success.",
+      badge: "Smart Tech Classrooms",
+      title: "Collaborative Learning With World-Class Nigerian Faculty",
+      subtitle: "Interactive digital smart boards, individual tablet learning, and inspiring mentorship designed to unlock every child's full creative genius.",
       cta: "Discover Curriculum",
-      tag: "Early Years to Secondary"
+      tag: "Early Years to Senior Secondary"
     },
     {
-      image: hero3,
-      badge: "Cutting-Edge STEM Education",
-      title: "Advanced Laboratories & Practical Science",
-      subtitle: "Empowering young scientists, coders, and innovators through rigorous hands-on laboratory experiences.",
-      cta: "Learn More",
-      tag: "Robotics & Innovation"
+      image: hero1,
+      badge: "Prestige & Culture",
+      title: "Proudly Inspiring Young Leaders Across Nigeria",
+      subtitle: "Combining world-standard academic curriculum with African leadership integrity and 21st-century problem-solving skills.",
+      cta: "Join The Academy",
+      tag: "Excellence in Action"
     },
     {
-      image: hero4,
-      badge: "Holistic Development",
-      title: "Sports, Arts, Music & Creative Expression",
-      subtitle: "Balanced growth ensuring physical fitness, creative expression, musical mastery, and team sportsmanship.",
+      image: hero2,
+      badge: "Future Innovators",
+      title: "Coding, Robotics & Creative Arts Excellence",
+      subtitle: "Equipping our boys and girls with foundational coding, mathematics, scientific inquiry, and design thinking from day one.",
       cta: "View Campus Life",
-      tag: "Champions in Athletics"
+      tag: "STEM & Creative Labs"
     }
   ];
 
@@ -87,7 +85,6 @@ export default function LandingPage({ onNavigateLogin }) {
     setSubmitting(true);
 
     try {
-      // Try real backend API first
       const res = await fetch('/api/newsletter/subscribe.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -97,14 +94,12 @@ export default function LandingPage({ onNavigateLogin }) {
       if (data && data.success) {
         setNewsletterSuccess(true);
       } else {
-        // Fallback local persistence
         const existing = JSON.parse(localStorage.getItem('portal_newsletter') || '[]');
         existing.push({ email: newsletterEmail, date: new Date().toISOString() });
         localStorage.setItem('portal_newsletter', JSON.stringify(existing));
         setNewsletterSuccess(true);
       }
     } catch (err) {
-      // Fallback local persistence
       const existing = JSON.parse(localStorage.getItem('portal_newsletter') || '[]');
       existing.push({ email: newsletterEmail, date: new Date().toISOString() });
       localStorage.setItem('portal_newsletter', JSON.stringify(existing));
@@ -119,57 +114,47 @@ export default function LandingPage({ onNavigateLogin }) {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       
-      {/* Top Banner Notice */}
-      <div style={{ backgroundColor: '#0f172a', color: '#94a3b8', fontSize: '0.85rem', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      {/* Top Banner Notice with Brand Accent */}
+      <div style={{ backgroundColor: '#00221a', color: '#cbd5d0', fontSize: '0.85rem', padding: '8px 0', borderBottom: '1px solid rgba(168,240,68,0.2)' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#cbd5e1' }}>
-              <Phone size={14} color="#f59e0b" /> +234 (0) 800-ST-AUGUSTINE
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2e8e4' }}>
+              <Phone size={14} color="#A8F044" /> +234 (0) 812-CREA8ORZ
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#cbd5e1' }}>
-              <Mail size={14} color="#f59e0b" /> info@staugustineacademy.edu
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2e8e4' }}>
+              <Mail size={14} color="#A8F044" /> admissions@crea8orz.academy
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', padding: '2px 8px', borderRadius: '4px', fontWeight: 600, fontSize: '0.75rem' }}>
-              Term 2 Assessment Open
+            <span style={{ backgroundColor: '#A8F044', color: '#003024', padding: '2px 10px', borderRadius: '4px', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.04em' }}>
+              Innova8 • Crea8 • Eleva8
             </span>
-            <span style={{ color: '#e2e8f0' }}>Portal Milestone 1 Live</span>
+            <span style={{ color: '#e2e8e4' }}>Term 2 Academic Portal Live</span>
           </div>
         </div>
       </div>
 
       {/* Navigation Header */}
-      <header style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(10px)', borderBottom: '1px solid #e2e8f0', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '76px' }}>
+      <header style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', boxShadow: '0 4px 15px rgba(0, 48, 36, 0.04)' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '78px' }}>
           {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 4px 10px rgba(30, 58, 138, 0.3)' }}>
-              <GraduationCap size={28} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '1.25rem', color: '#0f172a', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-                ST. AUGUSTINE
-              </div>
-              <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', color: '#2563eb', fontWeight: 700, textTransform: 'uppercase' }}>
-                International Academy
-              </div>
-            </div>
+          <div style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <Crea8orzLogo size={42} showMotto={true} />
           </div>
 
           {/* Navigation links */}
           <nav style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-            <a href="#about" style={{ color: '#334155', fontWeight: 500, fontSize: '0.95rem', transition: 'color 0.2s' }}>About Us</a>
-            <a href="#programs" style={{ color: '#334155', fontWeight: 500, fontSize: '0.95rem' }}>Academic Sections</a>
-            <a href="#news" style={{ color: '#334155', fontWeight: 500, fontSize: '0.95rem' }}>News & Updates</a>
-            <a href="#newsletter" style={{ color: '#334155', fontWeight: 500, fontSize: '0.95rem' }}>Contact</a>
+            <a href="#about" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>About Us</a>
+            <a href="#programs" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Academic Sections</a>
+            <a href="#news" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Campus News</a>
+            <a href="#newsletter" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Contact</a>
           </nav>
 
           {/* Action / Login Button */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button 
               onClick={onNavigateLogin}
-              className="btn btn-primary"
+              className="btn btn-lime"
               style={{ padding: '10px 24px', fontSize: '0.95rem' }}
             >
               <Users size={18} />
@@ -180,7 +165,7 @@ export default function LandingPage({ onNavigateLogin }) {
       </header>
 
       {/* Hero Slideshow Section */}
-      <section style={{ position: 'relative', height: '620px', overflow: 'hidden', backgroundColor: '#0f172a' }}>
+      <section style={{ position: 'relative', height: '640px', overflow: 'hidden', backgroundColor: '#00221a' }}>
         {slides.map((slide, idx) => (
           <div
             key={idx}
@@ -193,7 +178,7 @@ export default function LandingPage({ onNavigateLogin }) {
               opacity: idx === currentSlide ? 1 : 0,
               transition: 'opacity 1s ease-in-out',
               pointerEvents: idx === currentSlide ? 'auto' : 'none',
-              backgroundImage: `linear-gradient(to right, rgba(15, 23, 42, 0.90) 0%, rgba(15, 23, 42, 0.65) 50%, rgba(15, 23, 42, 0.35) 100%), url(${slide.image})`,
+              backgroundImage: `linear-gradient(to right, rgba(0, 48, 36, 0.94) 0%, rgba(0, 48, 36, 0.72) 55%, rgba(0, 48, 36, 0.4) 100%), url(${slide.image})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               display: 'flex',
@@ -201,25 +186,25 @@ export default function LandingPage({ onNavigateLogin }) {
             }}
           >
             <div className="container" style={{ zIndex: 10 }}>
-              <div style={{ maxWidth: '680px', color: 'white' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '50px', backgroundColor: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(8px)', marginBottom: '20px', border: '1px solid rgba(255, 255, 255, 0.25)' }}>
-                  <Sparkles size={16} color="#f59e0b" />
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f8fafc', letterSpacing: '0.04em' }}>{slide.badge}</span>
+              <div style={{ maxWidth: '720px', color: 'white' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '50px', backgroundColor: 'rgba(168, 240, 68, 0.18)', backdropFilter: 'blur(8px)', marginBottom: '20px', border: '1px solid #A8F044' }}>
+                  <Sparkles size={16} color="#A8F044" />
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#A8F044', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{slide.badge}</span>
                 </div>
 
-                <h1 style={{ fontSize: '3.2rem', color: '#ffffff', fontWeight: 800, lineHeight: 1.15, marginBottom: '20px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
+                <h1 style={{ fontSize: '3.4rem', color: '#ffffff', fontWeight: 800, lineHeight: 1.15, marginBottom: '20px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
                   {slide.title}
                 </h1>
 
-                <p style={{ fontSize: '1.2rem', color: '#e2e8f0', lineHeight: 1.6, marginBottom: '32px', fontWeight: 400 }}>
+                <p style={{ fontSize: '1.2rem', color: '#e2e8e4', lineHeight: 1.6, marginBottom: '34px', fontWeight: 400 }}>
                   {slide.subtitle}
                 </p>
 
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                  <button onClick={onNavigateLogin} className="btn btn-gold" style={{ padding: '14px 28px', fontSize: '1.05rem' }}>
+                  <button onClick={onNavigateLogin} className="btn btn-lime" style={{ padding: '14px 30px', fontSize: '1.05rem' }}>
                     Access Portal <ChevronRight size={18} />
                   </button>
-                  <a href="#programs" className="btn btn-white" style={{ padding: '14px 28px', fontSize: '1.05rem', backgroundColor: 'rgba(255,255,255,0.15)', color: 'white', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.3)' }}>
+                  <a href="#programs" className="btn btn-white" style={{ padding: '14px 28px', fontSize: '1.05rem', backgroundColor: 'rgba(255,255,255,0.12)', color: 'white', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.3)' }}>
                     Explore Curriculum
                   </a>
                 </div>
@@ -232,9 +217,7 @@ export default function LandingPage({ onNavigateLogin }) {
         <button 
           onClick={handlePrevSlide}
           aria-label="Previous slide"
-          style={{ position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', zIndex: 20, transition: 'all 0.2s', border: '1px solid rgba(255,255,255,0.25)' }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.4)'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+          style={{ position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(0, 48, 36, 0.6)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A8F044', zIndex: 20, transition: 'all 0.2s', border: '1px solid #A8F044' }}
         >
           <ChevronLeft size={24} />
         </button>
@@ -242,9 +225,7 @@ export default function LandingPage({ onNavigateLogin }) {
         <button 
           onClick={handleNextSlide}
           aria-label="Next slide"
-          style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', zIndex: 20, transition: 'all 0.2s', border: '1px solid rgba(255,255,255,0.25)' }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.4)'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+          style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(0, 48, 36, 0.6)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A8F044', zIndex: 20, transition: 'all 0.2s', border: '1px solid #A8F044' }}
         >
           <ChevronRight size={24} />
         </button>
@@ -259,7 +240,7 @@ export default function LandingPage({ onNavigateLogin }) {
                 width: i === currentSlide ? '36px' : '10px',
                 height: '10px',
                 borderRadius: '5px',
-                backgroundColor: i === currentSlide ? '#f59e0b' : 'rgba(255,255,255,0.4)',
+                backgroundColor: i === currentSlide ? '#A8F044' : 'rgba(255,255,255,0.3)',
                 transition: 'all 0.3s ease',
                 border: 'none',
                 cursor: 'pointer'
@@ -270,73 +251,73 @@ export default function LandingPage({ onNavigateLogin }) {
       </section>
 
       {/* Highlights / Stats strip */}
-      <section style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0', padding: '36px 0', boxShadow: '0 4px 20px -2px rgba(0,0,0,0.03)' }}>
+      <section style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8e4', padding: '36px 0', boxShadow: '0 4px 20px -2px rgba(0, 48, 36, 0.04)' }}>
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '30px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(0, 48, 36, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <Award size={28} />
             </div>
             <div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0f172a' }}>100%</div>
-              <div style={{ fontSize: '0.88rem', color: '#64748b', fontWeight: 500 }}>WAEC / NECO Pass Rate</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#003024' }}>100%</div>
+              <div style={{ fontSize: '0.88rem', color: '#5e7970', fontWeight: 600 }}>WAEC, NECO & IGCSE Pass</div>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(168, 240, 68, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <BookOpen size={28} />
             </div>
             <div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0f172a' }}>1 : 12</div>
-              <div style={{ fontSize: '0.88rem', color: '#64748b', fontWeight: 500 }}>Teacher to Student Ratio</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#003024' }}>1 : 12</div>
+              <div style={{ fontSize: '0.88rem', color: '#5e7970', fontWeight: 600 }}>Teacher-to-Student Ratio</div>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(0, 48, 36, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <ShieldCheck size={28} />
             </div>
             <div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0f172a' }}>25+ Years</div>
-              <div style={{ fontSize: '0.88rem', color: '#64748b', fontWeight: 500 }}>Legacy of Moral Character</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#003024' }}>Innova8 • Crea8</div>
+              <div style={{ fontSize: '0.88rem', color: '#5e7970', fontWeight: 600 }}>Africa Tech Core Values</div>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: '#fdf2f8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#db2777' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(168, 240, 68, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <Users size={28} />
             </div>
             <div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0f172a' }}>1,800+</div>
-              <div style={{ fontSize: '0.88rem', color: '#64748b', fontWeight: 500 }}>Active Enrolled Scholars</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#003024' }}>1,500+</div>
+              <div style={{ fontSize: '0.88rem', color: '#5e7970', fontWeight: 600 }}>Scholars in Lagos & Abuja</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" style={{ padding: '80px 0', backgroundColor: '#f8fafc' }}>
+      <section id="about" style={{ padding: '80px 0', backgroundColor: '#f8faf9' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '50px', alignItems: 'center' }}>
             <div>
-              <span className="badge badge-primary" style={{ marginBottom: '12px' }}>About St. Augustine Academy</span>
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#0f172a' }}>
-                Building Character, Inspiring Intellect & Shaping Destiny
+              <span className="badge badge-lime" style={{ marginBottom: '12px' }}>About Crea8orz Academy</span>
+              <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#003024' }}>
+                Igniting Innovation, Empowering Creators & Elevating Africa
               </h2>
-              <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '20px' }}>
-                Founded on the pillars of discipline, academic rigor, and moral grounding, St. Augustine Academy is dedicated to delivering education tailored to the 21st century. Our campus offers world-standard digital learning suites, state-of-the-art physics, chemistry, and biology labs, alongside enriched creative arts and athletic sports complexes.
+              <p style={{ color: '#334d44', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '20px' }}>
+                Crea8orz Academy is a premier Nigerian educational institution providing blended British and Nigerian curricula across Nursery, Primary, and Secondary divisions. Designed with innovation at its core, our students thrive in an environment centered on critical thinking, technology fluency, creative arts, and moral discipline.
               </p>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '30px' }}>
                 {[
-                  "Dual British & National Curriculum accreditation with proven excellence.",
-                  "Personalized mentorship with smart student performance tracking portals.",
-                  "Cultivating digital fluency: robotics, coding, STEM, and foreign languages.",
-                  "Safe, serene, and modern boarding and day student environment."
+                  "Dual British & Nigerian national curricula with exceptional academic records.",
+                  "Classrooms equipped with interactive smart displays & digital tablets.",
+                  "Coding, Robotics, AI literacy, and STEM research centers from basic education.",
+                  "Dedicated Nigerian teachers certified in modern global instructional methodologies."
                 ].map((item, index) => (
                   <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <CheckCircle size={20} color="#10b981" />
-                    <span style={{ color: '#334155', fontWeight: 500 }}>{item}</span>
+                    <CheckCircle size={20} color="#003024" />
+                    <span style={{ color: '#0a1f18', fontWeight: 600 }}>{item}</span>
                   </div>
                 ))}
               </div>
@@ -348,16 +329,16 @@ export default function LandingPage({ onNavigateLogin }) {
 
             {/* Visual Mosaic */}
             <div style={{ position: 'relative' }}>
-              <div style={{ borderRadius: '20px', overflow: 'hidden', boxShadow: 'var(--shadow-xl)', border: '8px solid white' }}>
-                <img src={hero2} alt="Modern Classroom" style={{ width: '100%', height: '360px', objectFit: 'cover', display: 'block' }} />
+              <div style={{ borderRadius: '20px', overflow: 'hidden', boxShadow: 'var(--shadow-xl)', border: '6px solid white' }}>
+                <img src={hero2} alt="Crea8orz Modern Nigerian Classroom" style={{ width: '100%', height: '380px', objectFit: 'cover', display: 'block' }} />
               </div>
-              <div style={{ position: 'absolute', bottom: '-24px', left: '-20px', backgroundColor: 'white', padding: '20px 24px', borderRadius: '16px', boxShadow: 'var(--shadow-lg)', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706' }}>
+              <div style={{ position: 'absolute', bottom: '-24px', left: '-20px', backgroundColor: '#003024', padding: '18px 24px', borderRadius: '16px', boxShadow: 'var(--shadow-lg)', border: '2px solid #A8F044', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#A8F044', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
                   <Award size={24} />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem' }}>Top 1% Ranked Academy</div>
-                  <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Ministry of Education Certified</div>
+                  <div style={{ fontWeight: 800, color: 'white', fontSize: '1.05rem' }}>Top Rated STEM Academy</div>
+                  <div style={{ fontSize: '0.85rem', color: '#A8F044' }}>Lagos State Ministry of Education Accredited</div>
                 </div>
               </div>
             </div>
@@ -369,74 +350,68 @@ export default function LandingPage({ onNavigateLogin }) {
       <section id="programs" style={{ padding: '80px 0', backgroundColor: '#ffffff' }}>
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 60px auto' }}>
-            <span className="badge badge-emerald" style={{ marginBottom: '12px' }}>Comprehensive Education</span>
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '16px', color: '#0f172a' }}>Academic Sections & Divisions</h2>
-            <p style={{ color: '#64748b', fontSize: '1.05rem' }}>
-              Providing tailored curriculum structures and supportive environments for every developmental milestone.
+            <span className="badge badge-primary" style={{ marginBottom: '12px' }}>Scope: Nursery to Secondary</span>
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '16px', color: '#003024' }}>Academic Divisions</h2>
+            <p style={{ color: '#5e7970', fontSize: '1.05rem' }}>
+              Structured learning stages designed to prepare young African minds for leadership and global relevance.
             </p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
             
             {/* Early Childhood / Nursery */}
-            <div style={{ borderRadius: '18px', border: '1px solid #e2e8f0', overflow: 'hidden', transition: 'transform 0.2s, box-shadow 0.2s', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}
-                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = 'var(--shadow-xl)'; }}
-                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}>
-              <div style={{ height: '200px', backgroundImage: `url(${hero2})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#3b82f6', color: 'white', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>
+            <div style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ height: '220px', backgroundImage: `url(${hero2})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#003024', color: '#A8F044', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
                   Ages 2 – 5
                 </div>
               </div>
               <div style={{ padding: '28px' }}>
-                <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#0f172a' }}>Nursery & Early Foundation</h3>
-                <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '20px' }}>
-                  Montessori-inspired phonics, numeracy discovery, sensory motor skills development, and safe imaginative indoor play areas.
+                <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Early Years Foundation (Nursery)</h3>
+                <p style={{ color: '#5e7970', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                  Montessori phonics, early numeracy, sensory discovery, and motor skills development in safe, air-conditioned play suites.
                 </p>
-                <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#2563eb', fontWeight: 600 }}>Nursery 1 – 3 Programs</span>
-                  <ChevronRight size={18} color="#2563eb" />
+                <div style={{ borderTop: '1px solid #f1f5f3', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#003024', fontWeight: 700 }}>Nursery 1 – 3 Programs</span>
+                  <ChevronRight size={18} color="#003024" />
                 </div>
               </div>
             </div>
 
             {/* Primary Section */}
-            <div style={{ borderRadius: '18px', border: '1px solid #e2e8f0', overflow: 'hidden', transition: 'transform 0.2s, box-shadow 0.2s', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}
-                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = 'var(--shadow-xl)'; }}
-                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}>
-              <div style={{ height: '200px', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#10b981', color: 'white', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>
+            <div style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ height: '220px', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#A8F044', color: '#003024', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
                   Ages 6 – 11
                 </div>
               </div>
               <div style={{ padding: '28px' }}>
-                <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#0f172a' }}>Primary / Basic Education</h3>
-                <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '20px' }}>
-                  Comprehensive English, Mathematics, STEM foundations, French & Nigerian languages, coding basics, and creative arts.
+                <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Primary Education (Grades 1 – 6)</h3>
+                <p style={{ color: '#5e7970', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                  Core English Studies, Mathematics, Basic Science & Tech, Cultural & Creative Arts, French, and early Python coding.
                 </p>
-                <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#059669', fontWeight: 600 }}>Grades 1 – 6 Curriculum</span>
-                  <ChevronRight size={18} color="#059669" />
+                <div style={{ borderTop: '1px solid #f1f5f3', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#003024', fontWeight: 700 }}>Primary Curriculum</span>
+                  <ChevronRight size={18} color="#003024" />
                 </div>
               </div>
             </div>
 
             {/* Secondary Section */}
-            <div style={{ borderRadius: '18px', border: '1px solid #e2e8f0', overflow: 'hidden', transition: 'transform 0.2s, box-shadow 0.2s', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}
-                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = 'var(--shadow-xl)'; }}
-                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}>
-              <div style={{ height: '200px', backgroundImage: `url(${hero3})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#f59e0b', color: '#1e1e1e', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>
+            <div style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ height: '220px', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#003024', color: '#A8F044', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
                   Ages 12 – 18
                 </div>
               </div>
               <div style={{ padding: '28px' }}>
-                <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#0f172a' }}>Junior & Senior Secondary</h3>
-                <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '20px' }}>
-                  Pre-university pathways in Pure Sciences, Technology, Arts & Humanities, and Commerce with WAEC, NECO, IGCSE & SAT preparation.
+                <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Junior & Senior Secondary (JSS & SSS)</h3>
+                <p style={{ color: '#5e7970', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                  Pre-university pathways in Pure Sciences, Technology & Computing, Arts & Humanities, and Commercial Studies with WAEC/NECO excellence.
                 </p>
-                <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#d97706', fontWeight: 600 }}>JSS 1 – SSS 3 Classes</span>
-                  <ChevronRight size={18} color="#d97706" />
+                <div style={{ borderTop: '1px solid #f1f5f3', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#003024', fontWeight: 700 }}>JSS 1 – SSS 3 Arms</span>
+                  <ChevronRight size={18} color="#003024" />
                 </div>
               </div>
             </div>
@@ -445,48 +420,18 @@ export default function LandingPage({ onNavigateLogin }) {
         </div>
       </section>
 
-      {/* News & Announcements Section */}
-      <section id="news" style={{ padding: '80px 0', backgroundColor: '#f8fafc' }}>
-        <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
-            <div>
-              <span className="badge badge-gold" style={{ marginBottom: '12px' }}>Campus Bulletin</span>
-              <h2 style={{ fontSize: '2.5rem', color: '#0f172a' }}>Latest News & Announcements</h2>
-            </div>
-            <button onClick={onNavigateLogin} className="btn btn-outline">
-              Sign In to View Detailed Circulars <ChevronRight size={16} />
-            </button>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px' }}>
-            {INITIAL_ANNOUNCEMENTS.map((item) => (
-              <div key={item.id} style={{ backgroundColor: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #e2e8f0', boxShadow: 'var(--shadow-sm)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <span className="badge badge-primary">{item.category}</span>
-                  <span style={{ fontSize: '0.82rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Calendar size={14} /> {item.date}
-                  </span>
-                </div>
-                <h4 style={{ fontSize: '1.2rem', marginBottom: '12px', color: '#0f172a' }}>{item.title}</h4>
-                <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6 }}>{item.summary}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Signup (Milestone 1 Core Requirement) */}
-      <section id="newsletter" style={{ padding: '80px 0', background: 'linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%)', color: 'white' }}>
+      {/* Newsletter Signup (Milestone 1 Core Requirement with Brand Colors) */}
+      <section id="newsletter" style={{ padding: '80px 0', backgroundColor: '#003024', color: 'white', position: 'relative' }}>
         <div className="container">
           <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
-            <span style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', color: '#fef08a', padding: '4px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-              Stay Informed
+            <span style={{ backgroundColor: 'rgba(168, 240, 68, 0.2)', color: '#A8F044', padding: '6px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', border: '1px solid #A8F044' }}>
+              Stay Connected
             </span>
-            <h2 style={{ fontSize: '2.6rem', color: 'white', marginTop: '16px', marginBottom: '16px' }}>
-              Subscribe to the Academy Newsletter
+            <h2 style={{ fontSize: '2.6rem', color: 'white', marginTop: '18px', marginBottom: '16px' }}>
+              Subscribe to the Crea8orz Bulletin
             </h2>
-            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', marginBottom: '32px' }}>
-              Receive termly newsletters, admissions alerts, academic calendars, and school event notifications directly to your inbox.
+            <p style={{ color: '#cbd5d0', fontSize: '1.1rem', marginBottom: '32px' }}>
+              Get direct updates on school terms, entrance examinations, academic competitions, and technological showcases.
             </p>
 
             <form onSubmit={handleSubscribe} style={{ display: 'flex', gap: '12px', maxWidth: '520px', margin: '0 auto', flexWrap: 'wrap' }}>
@@ -500,26 +445,27 @@ export default function LandingPage({ onNavigateLogin }) {
                   flex: '1 1 280px',
                   padding: '14px 20px',
                   borderRadius: '12px',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  color: '#0f172a',
+                  border: '1px solid rgba(168, 240, 68, 0.3)',
+                  backgroundColor: '#ffffff',
+                  color: '#003024',
                   fontSize: '1rem',
-                  outline: 'none'
+                  outline: 'none',
+                  fontWeight: 500
                 }}
               />
               <button 
                 type="submit" 
                 disabled={submitting}
-                className="btn btn-gold"
+                className="btn btn-lime"
                 style={{ padding: '14px 28px', fontSize: '1rem' }}
               >
-                {submitting ? 'Subscribing...' : 'Subscribe Now'}
+                {submitting ? 'Subscribing...' : 'Subscribe'}
               </button>
             </form>
 
             {newsletterSuccess && (
-              <div style={{ marginTop: '20px', padding: '12px 20px', backgroundColor: 'rgba(16, 185, 129, 0.2)', border: '1px solid #10b981', borderRadius: '10px', color: '#a7f3d0', fontSize: '0.95rem' }}>
-                ✓ Thank you for subscribing! Your email has been saved to the school database.
+              <div style={{ marginTop: '20px', padding: '12px 20px', backgroundColor: 'rgba(168, 240, 68, 0.2)', border: '1px solid #A8F044', borderRadius: '10px', color: '#A8F044', fontSize: '0.95rem', fontWeight: 600 }}>
+                ✓ Thank you for subscribing! Your email has been added to the Crea8orz Academy records.
               </div>
             )}
           </div>
@@ -527,51 +473,50 @@ export default function LandingPage({ onNavigateLogin }) {
       </section>
 
       {/* Footer */}
-      <footer style={{ backgroundColor: '#090d16', color: '#94a3b8', padding: '60px 0 30px 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <footer style={{ backgroundColor: '#00221a', color: '#94a3b8', padding: '60px 0 30px 0', borderTop: '1px solid rgba(168, 240, 68, 0.15)' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '40px', marginBottom: '50px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'white', marginBottom: '16px' }}>
-                <GraduationCap size={28} color="#3b82f6" />
-                <span style={{ fontSize: '1.25rem', fontWeight: 800 }}>ST. AUGUSTINE ACADEMY</span>
+              <div style={{ marginBottom: '16px' }}>
+                <Crea8orzLogo size={38} textColor="#ffffff" accentColor="#A8F044" showMotto={true} />
               </div>
-              <p style={{ fontSize: '0.9rem', lineHeight: 1.6, color: '#64748b' }}>
-                Committed to nurturing intellectual excellence, ethical leadership, and creative innovation across Early Years, Primary, and Secondary education.
+              <p style={{ fontSize: '0.9rem', lineHeight: 1.6, color: '#8fa39a' }}>
+                Leading the future of African education through digital excellence, creative innovation, and disciplined moral leadership.
               </p>
             </div>
 
             <div>
-              <h5 style={{ color: 'white', fontSize: '1rem', marginBottom: '18px' }}>Portal Portals</h5>
+              <h5 style={{ color: 'white', fontSize: '1rem', marginBottom: '18px' }}>Portal Links</h5>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.9rem' }}>
-                <a href="#" onClick={(e) => { e.preventDefault(); onNavigateLogin(); }} style={{ color: '#cbd5e1' }}>Student Result Portal</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); onNavigateLogin(); }} style={{ color: '#cbd5e1' }}>Staff & Teacher Portal</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); onNavigateLogin(); }} style={{ color: '#cbd5e1' }}>Main Admin Management</a>
-                <a href="#newsletter" style={{ color: '#cbd5e1' }}>Admissions & Inquiries</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); onNavigateLogin(); }} style={{ color: '#cbd5d0' }}>Student Result Portal</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); onNavigateLogin(); }} style={{ color: '#cbd5d0' }}>Teacher Grading Suite</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); onNavigateLogin(); }} style={{ color: '#cbd5d0' }}>Main Admin Management</a>
+                <a href="#newsletter" style={{ color: '#cbd5d0' }}>Admissions & Enquiries</a>
               </div>
             </div>
 
             <div>
-              <h5 style={{ color: 'white', fontSize: '1rem', marginBottom: '18px' }}>Contact & Campus</h5>
+              <h5 style={{ color: 'white', fontSize: '1rem', marginBottom: '18px' }}>Campuses & Contact</h5>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.9rem' }}>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <MapPin size={18} color="#3b82f6" style={{ marginTop: '2px', flexShrink: 0 }} />
-                  <span>Plot 12, Academic Crescent, Royal Estate, Victoria Island, Lagos, Nigeria.</span>
+                  <MapPin size={18} color="#A8F044" style={{ marginTop: '2px', flexShrink: 0 }} />
+                  <span style={{ color: '#cbd5d0' }}>Crea8orz Campus, Innovation Drive, Lekki Phase 1, Lagos, Nigeria.</span>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <Phone size={16} color="#3b82f6" />
-                  <span>+234 (0) 803 000 8899</span>
+                  <Phone size={16} color="#A8F044" />
+                  <span style={{ color: '#cbd5d0' }}>+234 (0) 812 000 8899</span>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <Mail size={16} color="#3b82f6" />
-                  <span>admissions@staugustineacademy.edu</span>
+                  <Mail size={16} color="#A8F044" />
+                  <span style={{ color: '#cbd5d0' }}>admissions@crea8orz.academy</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', fontSize: '0.85rem' }}>
-            <span>&copy; {new Date().getFullYear()} St. Augustine International Academy. All Rights Reserved.</span>
-            <span>School Management System — Milestone 1 Production Build</span>
+            <span style={{ color: '#8fa39a' }}>&copy; {new Date().getFullYear()} Crea8orz Academy. All Rights Reserved.</span>
+            <span style={{ color: '#A8F044', fontWeight: 600 }}>Innova8 • Crea8 • Eleva8</span>
           </div>
         </div>
       </footer>

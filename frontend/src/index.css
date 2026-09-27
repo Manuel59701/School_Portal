@@ -1,34 +1,40 @@
-/* Design Tokens and Theme Variables */
+/* Crea8orz Academy - Design Tokens & Brand Theme */
 :root {
-  --primary-900: #0f172a;
-  --primary-800: #1e293b;
-  --primary-700: #1e3a8a;
-  --primary-600: #2563eb;
-  --primary-500: #3b82f6;
-  --primary-100: #dbeafe;
-  --primary-50: #eff6ff;
+  /* Brand Primary Colors */
+  --brand-deep-green: #003024;      /* Deep Forest Green */
+  --brand-lime: #A8F044;            /* Vibrant Electric Lime */
+  --brand-green-hover: #004635;
+  --brand-lime-hover: #baf765;
+  --brand-lime-light: rgba(168, 240, 68, 0.15);
 
-  --accent-gold: #f59e0b;
-  --accent-gold-dark: #d97706;
+  --primary-900: #00221a;
+  --primary-800: #003024;
+  --primary-700: #004635;
+  --primary-600: #005c46;
+  --primary-500: #00775a;
+  --primary-100: #d1fae5;
+  --primary-50: #f0fdf4;
+
+  --accent-lime: #A8F044;
+  --accent-gold: #fbbf24;
   --accent-emerald: #10b981;
-  --accent-emerald-dark: #059669;
   --accent-rose: #f43f5e;
 
-  --surface-bg: #f8fafc;
+  --surface-bg: #f8faf9;
   --surface-card: #ffffff;
-  --surface-card-hover: #f1f5f9;
-  --border-light: #e2e8f0;
-  --border-medium: #cbd5e1;
+  --surface-card-hover: #f0fdf4;
+  --border-light: #e2e8e4;
+  --border-medium: #cbd5d0;
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+  --text-primary: #0a1f18;
+  --text-secondary: #334d44;
+  --text-muted: #5e7970;
   --text-inverse: #ffffff;
 
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 2px 0 rgb(0 48 36 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 48 36 / 0.1), 0 2px 4px -2px rgb(0 48 36 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 48 36 / 0.12), 0 4px 6px -4px rgb(0 48 36 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 48 36 / 0.15), 0 8px 10px -6px rgb(0 48 36 / 0.12);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -81,11 +87,6 @@ button {
   50% { opacity: 1; }
 }
 
-@keyframes slideNext {
-  from { opacity: 0.3; transform: scale(1.02); }
-  to { opacity: 1; transform: scale(1); }
-}
-
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out forwards;
 }
@@ -109,9 +110,9 @@ button {
 }
 
 .glass-dark {
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(0, 48, 36, 0.88);
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(168, 240, 68, 0.2);
   color: white;
 }
 
@@ -129,27 +130,29 @@ button {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  background: #003024;
+  color: #ffffff;
+  border: 1px solid rgba(168, 240, 68, 0.3);
+  box-shadow: 0 4px 14px rgba(0, 48, 36, 0.3);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  background: #004635;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 6px 18px rgba(0, 48, 36, 0.45);
 }
 
-.btn-gold {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: #1e1e1e;
+.btn-lime {
+  background: #A8F044;
+  color: #003024;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 4px 14px rgba(168, 240, 68, 0.45);
 }
 
-.btn-gold:hover {
+.btn-lime:hover {
+  background: #bbf760;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
+  box-shadow: 0 6px 18px rgba(168, 240, 68, 0.6);
 }
 
 .btn-outline {
@@ -159,19 +162,19 @@ button {
 }
 
 .btn-outline:hover {
-  border-color: var(--primary-600);
-  color: var(--primary-600);
-  background: var(--primary-50);
+  border-color: #003024;
+  color: #003024;
+  background: rgba(168, 240, 68, 0.12);
 }
 
 .btn-white {
   background: white;
-  color: var(--primary-700);
+  color: #003024;
   box-shadow: var(--shadow-md);
 }
 
 .btn-white:hover {
-  background: #f8fafc;
+  background: #f8faf9;
   transform: translateY(-2px);
 }
 
@@ -187,7 +190,8 @@ button {
   letter-spacing: 0.05em;
 }
 
-.badge-primary { background: var(--primary-100); color: var(--primary-700); }
+.badge-primary { background: rgba(0, 48, 36, 0.1); color: #003024; }
+.badge-lime { background: rgba(168, 240, 68, 0.25); color: #003024; border: 1px solid rgba(0, 48, 36, 0.2); }
 .badge-emerald { background: #d1fae5; color: #065f46; }
 .badge-gold { background: #fef3c7; color: #92400e; }
 .badge-rose { background: #ffe4e6; color: #9f1239; }
@@ -198,14 +202,14 @@ button {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f1f5f3;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #cbd5d0;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #003024;
 }
 
 /* Print Styles for Results & Reports */
