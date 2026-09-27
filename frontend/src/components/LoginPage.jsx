@@ -117,7 +117,7 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
             <ArrowLeft size={18} /> Back to Public Website
           </button>
 
-          <Crea8orzLogo size={34} />
+          <Crea8orzLogo height={42} />
         </div>
       </header>
 
@@ -127,7 +127,7 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
           
           <div style={{ textAlign: 'center', marginBottom: '28px' }}>
             <div style={{ display: 'inline-block', marginBottom: '14px' }}>
-              <Crea8orzLogo size={48} showMotto={true} />
+              <Crea8orzLogo height={54} />
             </div>
             <h2 style={{ fontSize: '1.75rem', color: '#003024', fontWeight: 800, marginBottom: '6px' }}>Portal Authentication</h2>
             <p style={{ color: '#5e7970', fontSize: '0.92rem' }}>Sign in to your academic dashboard</p>

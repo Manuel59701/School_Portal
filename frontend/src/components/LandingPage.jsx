@@ -113,33 +113,13 @@ export default function LandingPage({ onNavigateLogin }) {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      
-      {/* Top Banner Notice with Brand Accent */}
-      <div style={{ backgroundColor: '#00221a', color: '#cbd5d0', fontSize: '0.85rem', padding: '8px 0', borderBottom: '1px solid rgba(168,240,68,0.2)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2e8e4' }}>
-              <Phone size={14} color="#A8F044" /> +234 (0) 812-CREA8ORZ
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#e2e8e4' }}>
-              <Mail size={14} color="#A8F044" /> admissions@crea8orz.academy
-            </span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ backgroundColor: '#A8F044', color: '#003024', padding: '2px 10px', borderRadius: '4px', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.04em' }}>
-              Innova8 • Crea8 • Eleva8
-            </span>
-            <span style={{ color: '#e2e8e4' }}>Term 2 Academic Portal Live</span>
-          </div>
-        </div>
-      </div>
 
       {/* Navigation Header */}
       <header style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', boxShadow: '0 4px 15px rgba(0, 48, 36, 0.04)' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '78px' }}>
           {/* Logo */}
           <div style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <Crea8orzLogo size={42} showMotto={true} />
+            <Crea8orzLogo height={52} />
           </div>
 
           {/* Navigation links */}
@@ -147,7 +127,7 @@ export default function LandingPage({ onNavigateLogin }) {
             <a href="#about" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>About Us</a>
             <a href="#programs" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Academic Sections</a>
             <a href="#news" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Campus News</a>
-            <a href="#newsletter" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Contact</a>
+            <a href="#newsletter" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Newsletter & Contact</a>
           </nav>
 
           {/* Action / Login Button */}
@@ -278,8 +258,8 @@ export default function LandingPage({ onNavigateLogin }) {
               <ShieldCheck size={28} />
             </div>
             <div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#003024' }}>Innova8 • Crea8</div>
-              <div style={{ fontSize: '0.88rem', color: '#5e7970', fontWeight: 600 }}>Africa Tech Core Values</div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#003024', letterSpacing: '0.04em' }}>I. C. E</div>
+              <div style={{ fontSize: '0.78rem', color: '#5e7970', fontWeight: 700, letterSpacing: '0.02em', marginTop: '2px' }}>Innova8. Crea8. Eleva8</div>
             </div>
           </div>
 
@@ -478,7 +458,7 @@ export default function LandingPage({ onNavigateLogin }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '40px', marginBottom: '50px' }}>
             <div>
               <div style={{ marginBottom: '16px' }}>
-                <Crea8orzLogo size={38} textColor="#ffffff" accentColor="#A8F044" showMotto={true} />
+                <Crea8orzLogo height={44} variant="on-dark" />
               </div>
               <p style={{ fontSize: '0.9rem', lineHeight: 1.6, color: '#8fa39a' }}>
                 Leading the future of African education through digital excellence, creative innovation, and disciplined moral leadership.
