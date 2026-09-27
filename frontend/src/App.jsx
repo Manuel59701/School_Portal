@@ -4,6 +4,7 @@ import LoginPage from './components/LoginPage';
 import StudentDashboard from './components/StudentDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
 import AdminDashboard from './components/AdminDashboard';
+import { clearAllResults } from './lib/portalStore';
 
 export default function App() {
   // Navigation views: 'landing', 'login', 'dashboard'
@@ -27,6 +28,10 @@ export default function App() {
   };
 
   const handleLogout = () => {
+    // Staff sessions end with a clean slate so no scores carry into the next session.
+    if (authState && (authState.role === 'teacher' || authState.role === 'admin')) {
+      clearAllResults();
+    }
     setAuthState(null);
     setCurrentView('landing');
     window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   ChevronRight, 
   ChevronLeft, 
@@ -22,7 +22,56 @@ import hero2 from '../assets/images/hero2.jpg';
 import hero3 from '../assets/images/hero3.jpg';
 import hero4 from '../assets/images/hero4.jpg';
 
+/* ── Scroll-reveal hook ──────────────────────────────────────────── */
+function useScrollReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target); // fire once
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    els.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  });
+}
+
+const INITIAL_ANNOUNCEMENTS = [
+  {
+    id: 1,
+    category: 'Admissions',
+    date: 'Sep 20, 2026',
+    title: '2026/2027 Academic Session Admissions Now Open',
+    summary:
+      'Crea8orz Academy is accepting applications for Nursery, Primary, and Secondary intake. Entrance assessments begin October 10th — secure your child\'s spot today.'
+  },
+  {
+    id: 2,
+    category: 'Achievement',
+    date: 'Sep 15, 2026',
+    title: 'Our SS3 Students Achieve 100% WAEC Distinctions',
+    summary:
+      'Crea8orz Academy\'s graduating class recorded a historic 100% five-credit pass rate in the 2026 WAEC examinations, with 87% scoring A1 in Mathematics and English.'
+  },
+  {
+    id: 3,
+    category: 'Events',
+    date: 'Sep 10, 2026',
+    title: 'Annual STEM & Creative Arts Showcase — Oct 25th',
+    summary:
+      'Students from Nursery to SSS 3 will present robotics projects, AI models, drama performances, and digital art installations at our flagship Innovation Day celebration.'
+  }
+];
+
 export default function LandingPage({ onNavigateLogin }) {
+  useScrollReveal();
   const slides = [
     {
       image: hero1,
@@ -167,20 +216,20 @@ export default function LandingPage({ onNavigateLogin }) {
           >
             <div className="container" style={{ zIndex: 10 }}>
               <div style={{ maxWidth: '720px', color: 'white' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '50px', backgroundColor: 'rgba(168, 240, 68, 0.18)', backdropFilter: 'blur(8px)', marginBottom: '20px', border: '1px solid #A8F044' }}>
+                <div className="animate-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '50px', backgroundColor: 'rgba(168, 240, 68, 0.18)', backdropFilter: 'blur(8px)', marginBottom: '20px', border: '1px solid #A8F044' }}>
                   <Sparkles size={16} color="#A8F044" />
                   <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#A8F044', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{slide.badge}</span>
                 </div>
 
-                <h1 style={{ fontSize: '3.4rem', color: '#ffffff', fontWeight: 800, lineHeight: 1.15, marginBottom: '20px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
+                <h1 className="animate-fade-up" style={{ fontSize: '3.4rem', color: '#ffffff', fontWeight: 800, lineHeight: 1.15, marginBottom: '20px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
                   {slide.title}
                 </h1>
 
-                <p style={{ fontSize: '1.2rem', color: '#e2e8e4', lineHeight: 1.6, marginBottom: '34px', fontWeight: 400 }}>
+                <p className="animate-fade-up delay-100" style={{ fontSize: '1.2rem', color: '#e2e8e4', lineHeight: 1.6, marginBottom: '34px', fontWeight: 400 }}>
                   {slide.subtitle}
                 </p>
 
-                <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div className="animate-fade-up delay-200" style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
                   <button onClick={onNavigateLogin} className="btn btn-lime" style={{ padding: '14px 30px', fontSize: '1.05rem' }}>
                     Access Portal <ChevronRight size={18} />
                   </button>
@@ -233,7 +282,7 @@ export default function LandingPage({ onNavigateLogin }) {
       {/* Highlights / Stats strip */}
       <section style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8e4', padding: '36px 0', boxShadow: '0 4px 20px -2px rgba(0, 48, 36, 0.04)' }}>
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '30px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="interactive-card reveal reveal-up stagger-1" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid #e2e8e4' }}>
             <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(0, 48, 36, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <Award size={28} />
             </div>
@@ -243,7 +292,7 @@ export default function LandingPage({ onNavigateLogin }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="interactive-card reveal reveal-up stagger-2" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid #e2e8e4' }}>
             <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(168, 240, 68, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <BookOpen size={28} />
             </div>
@@ -253,7 +302,7 @@ export default function LandingPage({ onNavigateLogin }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="interactive-card reveal reveal-up stagger-3" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid #e2e8e4' }}>
             <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(0, 48, 36, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <ShieldCheck size={28} />
             </div>
@@ -263,7 +312,7 @@ export default function LandingPage({ onNavigateLogin }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="interactive-card reveal reveal-up stagger-4" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid #e2e8e4' }}>
             <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(168, 240, 68, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <Users size={28} />
             </div>
@@ -279,7 +328,7 @@ export default function LandingPage({ onNavigateLogin }) {
       <section id="about" style={{ padding: '80px 0', backgroundColor: '#f8faf9' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '50px', alignItems: 'center' }}>
-            <div>
+            <div className="reveal reveal-left">
               <span className="badge badge-lime" style={{ marginBottom: '12px' }}>About Crea8orz Academy</span>
               <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#003024' }}>
                 Igniting Innovation, Empowering Creators & Elevating Africa
@@ -308,11 +357,11 @@ export default function LandingPage({ onNavigateLogin }) {
             </div>
 
             {/* Visual Mosaic */}
-            <div style={{ position: 'relative' }}>
+            <div className="reveal reveal-right" style={{ position: 'relative' }}>
               <div style={{ borderRadius: '20px', overflow: 'hidden', boxShadow: 'var(--shadow-xl)', border: '6px solid white' }}>
                 <img src={hero2} alt="Crea8orz Modern Nigerian Classroom" style={{ width: '100%', height: '380px', objectFit: 'cover', display: 'block' }} />
               </div>
-              <div style={{ position: 'absolute', bottom: '-24px', left: '-20px', backgroundColor: '#003024', padding: '18px 24px', borderRadius: '16px', boxShadow: 'var(--shadow-lg)', border: '2px solid #A8F044', display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div className="animate-float" style={{ position: 'absolute', bottom: '-24px', left: '-20px', backgroundColor: '#003024', padding: '18px 24px', borderRadius: '16px', boxShadow: 'var(--shadow-lg)', border: '2px solid #A8F044', display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#A8F044', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
                   <Award size={24} />
                 </div>
@@ -329,7 +378,7 @@ export default function LandingPage({ onNavigateLogin }) {
       {/* Academic Sections (Nursery, Primary, Secondary) */}
       <section id="programs" style={{ padding: '80px 0', backgroundColor: '#ffffff' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 60px auto' }}>
+          <div className="reveal reveal-up" style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 60px auto' }}>
             <span className="badge badge-primary" style={{ marginBottom: '12px' }}>Scope: Nursery to Secondary</span>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '16px', color: '#003024' }}>Academic Divisions</h2>
             <p style={{ color: '#5e7970', fontSize: '1.05rem' }}>
@@ -340,8 +389,9 @@ export default function LandingPage({ onNavigateLogin }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
             
             {/* Early Childhood / Nursery */}
-            <div style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ height: '220px', backgroundImage: `url(${hero2})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+            <div className="interactive-card reveal reveal-up stagger-1" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
+              <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
+                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero2})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#003024', color: '#A8F044', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
                   Ages 2 – 5
                 </div>
@@ -359,8 +409,9 @@ export default function LandingPage({ onNavigateLogin }) {
             </div>
 
             {/* Primary Section */}
-            <div style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ height: '220px', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+            <div className="interactive-card reveal reveal-up stagger-2" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
+              <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
+                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#A8F044', color: '#003024', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
                   Ages 6 – 11
                 </div>
@@ -378,8 +429,9 @@ export default function LandingPage({ onNavigateLogin }) {
             </div>
 
             {/* Secondary Section */}
-            <div style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ height: '220px', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+            <div className="interactive-card reveal reveal-up stagger-3" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
+              <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
+                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#003024', color: '#A8F044', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
                   Ages 12 – 18
                 </div>
@@ -400,10 +452,40 @@ export default function LandingPage({ onNavigateLogin }) {
         </div>
       </section>
 
-      {/* Newsletter Signup (Milestone 1 Core Requirement with Brand Colors) */}
+      {/* News & Announcements Section */}
+      <section id="news" style={{ padding: '80px 0', backgroundColor: '#f8faf9' }}>
+        <div className="container">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
+            <div className="reveal reveal-left">
+              <span className="badge badge-lime" style={{ marginBottom: '12px' }}>Campus Bulletin</span>
+              <h2 style={{ fontSize: '2.5rem', color: '#003024' }}>Latest News & Announcements</h2>
+            </div>
+            <button onClick={onNavigateLogin} className="btn btn-outline">
+              Sign In to View Detailed Circulars <ChevronRight size={16} />
+            </button>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px' }}>
+            {INITIAL_ANNOUNCEMENTS.map((item, idx) => (
+              <div key={item.id} className={`interactive-card reveal reveal-up stagger-${idx + 1}`} style={{ backgroundColor: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span className="badge badge-primary">{item.category}</span>
+                  <span style={{ fontSize: '0.82rem', color: '#5e7970', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Calendar size={14} /> {item.date}
+                  </span>
+                </div>
+                <h4 style={{ fontSize: '1.2rem', marginBottom: '12px', color: '#003024' }}>{item.title}</h4>
+                <p style={{ color: '#334d44', fontSize: '0.92rem', lineHeight: 1.6 }}>{item.summary}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Signup */}
       <section id="newsletter" style={{ padding: '80px 0', backgroundColor: '#003024', color: 'white', position: 'relative' }}>
         <div className="container">
-          <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
+          <div className="reveal reveal-scale" style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
             <span style={{ backgroundColor: 'rgba(168, 240, 68, 0.2)', color: '#A8F044', padding: '6px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', border: '1px solid #A8F044' }}>
               Stay Connected
             </span>

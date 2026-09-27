@@ -11,10 +11,12 @@ import {
   ShieldCheck,
   Search,
   Filter,
-  BarChart2
+  BarChart2,
+  RotateCcw
 } from 'lucide-react';
 import { INITIAL_CLASSES, INITIAL_TEACHERS, INITIAL_STUDENTS } from '../mockData';
 import Crea8orzLogo from './Crea8orzLogo';
+import { clearAllResults } from '../lib/portalStore';
 
 export default function AdminDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('classes');
@@ -32,6 +34,14 @@ export default function AdminDashboard({ user, onLogout }) {
   const [newTeacherEmail, setNewTeacherEmail] = useState('');
   const [newTeacherSubject, setNewTeacherSubject] = useState('');
   const [newTeacherClass, setNewTeacherClass] = useState('SSS 2 Sapphire (Tech/Science)');
+
+  const handleResetAll = () => {
+    const ok = window.confirm(
+      'Reset ALL results?\n\nThis clears every score, draft and published subject for all classes, terms and academic years. Students will see empty report cards until teachers commit again.'
+    );
+    if (!ok) return;
+    clearAllResults();
+  };
 
   const [subscribers, setSubscribers] = useState(() => {
     const saved = localStorage.getItem('portal_newsletter');
@@ -84,13 +94,21 @@ export default function AdminDashboard({ user, onLogout }) {
       {/* Top Header with Crea8orz Deep Green & Lime */}
       <nav style={{ backgroundColor: '#00221a', color: 'white', position: 'sticky', top: 0, zIndex: 50, borderBottom: '2px solid rgba(168, 240, 68, 0.2)' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '72px' }}>
-          <Crea8orzLogo size={36} textColor="#ffffff" accentColor="#A8F044" showMotto={false} />
+          <Crea8orzLogo height={36} variant="light" />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#ffffff' }}>System Administrator</div>
               <div style={{ fontSize: '0.8rem', color: '#A8F044' }}>Executive Console Authority</div>
             </div>
+            <button
+              onClick={handleResetAll}
+              className="btn btn-outline"
+              title="Clear every score and published subject in the portal"
+              style={{ padding: '8px 14px', fontSize: '0.85rem', color: '#fcd34d', borderColor: '#78350f', backgroundColor: 'transparent' }}
+            >
+              <RotateCcw size={16} /> Reset Results
+            </button>
             <button 
               onClick={onLogout}
               className="btn btn-outline"
