@@ -119,7 +119,7 @@ export default function LandingPage({ onNavigateLogin }) {
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '78px' }}>
           {/* Logo */}
           <div style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <Crea8orzLogo height={52} />
+            <Crea8orzLogo height={58} />
           </div>
 
           {/* Navigation links */}
