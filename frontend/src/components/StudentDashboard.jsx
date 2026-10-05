@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Download, LogOut, Sparkles, FileCheck2 } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { LogOut, FileCheck2 } from 'lucide-react';
 import Crea8orzLogo from './Crea8orzLogo';
 import ResultCardEditor from './ResultCardEditor';
 import { TERMS, ACADEMIC_YEARS, buildRoster, classKeyFromStudentId } from '../lib/academics';
@@ -23,15 +22,6 @@ export default function StudentDashboard({ user, onLogout }) {
 
   const committedSubjects = useMemo(() => getCommittedSubjects(state, session, classKey), [state, session, classKey]);
   const fileName = cardFileName({ studentName: student.name, term, academicYear });
-
-  const triggerCelebration = () => {
-    confetti({
-      particleCount: 80,
-      spread: 70,
-      colors: ['#003024', '#A8F044', '#ffffff', '#fbbf24'],
-      origin: { y: 0.6 }
-    });
-  };
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
@@ -85,10 +75,6 @@ export default function StudentDashboard({ user, onLogout }) {
                   <option key={option} value={option}>{option}</option>
                 ))}
               </select>
-
-              <button onClick={triggerCelebration} className="btn btn-lime" style={{ padding: '10px 16px' }}>
-                <Sparkles size={18} /> Celebrate
-              </button>
             </div>
           </div>
 
@@ -132,9 +118,9 @@ export default function StudentDashboard({ user, onLogout }) {
             <p style={{ fontSize: '0.83rem', color: '#5e7970' }}>
               Downloaded file: <strong style={{ color: '#003024', fontFamily: 'Consolas, "Courier New", monospace' }}>{fileName}</strong>
             </p>
-            <button onClick={triggerCelebration} className="btn btn-primary" style={{ padding: '11px 20px', marginTop: '10px' }}>
-              <Download size={17} /> Use the Download JPG button on the card to save a copy
-            </button>
+            <p style={{ fontSize: '0.83rem', color: '#5e7970', marginTop: '6px' }}>
+              Use the Download PDF button on the card to save an official copy.
+            </p>
           </div>
         </div>
       </main>

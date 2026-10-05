@@ -1,12 +1,16 @@
 import {
   CARD_W,
   CARD_H,
+  PANEL_TOP,
+  PANEL_HEIGHT,
   RESULT_THEME,
   TABLE_COLUMNS,
   gradeTone,
-  buildRecord
+  buildRecord,
+  sessionStamp
 } from './resultCard';
 import logoAsset from '../assets/images/crea8orz_logo.png';
+import { jsPDF } from 'jspdf';
 
 const SANS = '"Segoe UI", Arial, Helvetica, sans-serif';
 const MONO = 'Consolas, "Courier New", monospace';
@@ -21,8 +25,8 @@ const LAYOUT = {
   tableTop: 300,
   tableHeadHeight: 44,
   rowHeight: 32,
-  panelTop: 872,
-  panelHeight: 204,
+  panelTop: PANEL_TOP,
+  panelHeight: PANEL_HEIGHT,
   panelLeft: 44,
   panelWidth: 700,
   signLeft: 772,
@@ -595,14 +599,14 @@ function drawSignoff(ctx, record) {
     ctx.textAlign = 'left';
   });
 
-  drawStamp(ctx, x + w - 26, y + h - 66, 76, stamp);
+  drawStamp(ctx, x + w - 26, y + h - 66, 76, stamp, sessionStamp(record.academicYear));
 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   ctx.restore();
 }
 
-function drawStamp(ctx, cx, cy, r, color) {
+function drawStamp(ctx, cx, cy, r, color, sessionLabel) {
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate(-0.24);
@@ -624,18 +628,22 @@ function drawStamp(ctx, cx, cy, r, color) {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  drawArcText(ctx, 'FREEDOM WORD INTL', 0, 0, r - 22, 11, color, -Math.PI / 2, 2.2, 1);
+  drawArcText(ctx, 'CREA8ORZ ACADEMY', 0, 0, r - 22, 11, color, -Math.PI / 2, 2.2, 1);
   drawArcText(ctx, 'SECONDARY SCHOOL', 0, 0, r - 22, 11, color, Math.PI / 2, 2.2, -1);
 
-  setFont(ctx, 22, 800);
-  ctx.fillStyle = color;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('VERIFIED', 0, -14);
-  setFont(ctx, 10, 700);
-  ctx.fillText('OFFICIAL SCHOOL SEAL', 0, 4);
-  setFont(ctx, 10, 600);
-  ctx.fillText('2025 / 2026 SESSION', 0, 20);
+  setFont(ctx, 22, 800);
+  ctx.fillStyle = color;
+  ctx.fillText('VERIFIED', 0, sessionLabel ? -14 : -8);
+
+  setFont(ctx, fitText(ctx, 'OFFICIAL SCHOOL SEAL', r * 2 - 24, 10, 6, 700), 700);
+  ctx.fillText('OFFICIAL SCHOOL SEAL', 0, sessionLabel ? 4 : 12);
+
+  if (sessionLabel) {
+    setFont(ctx, fitText(ctx, sessionLabel, r * 2 - 24, 10, 6, 600), 600);
+    ctx.fillText(sessionLabel, 0, 20);
+  }
 
   ctx.restore();
 }
@@ -654,16 +662,16 @@ function drawCameraStamp(ctx, record) {
   ctx.restore();
 }
 
-function drawFrameLabel(ctx, record, width, height) {
+function drawFrameLabel(ctx, record, width, height, padX = MAT, padY = MAT) {
   ctx.save();
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   setFont(ctx, 15, 600, MONO);
   ctx.fillStyle = 'rgba(5, 47, 36, 0.65)';
-  ctx.fillText(record.label, MAT, height - 20);
+  ctx.fillText(record.label, padX, height - 20);
   ctx.textAlign = 'right';
   setFont(ctx, 13, 500, MONO);
-  ctx.fillText('Crea8orz Progress Report Engine', width - MAT, height - 20);
+  ctx.fillText('Crea8orz Progress Report Engine', width - padX, height - 20);
   ctx.restore();
 }
 
@@ -678,9 +686,11 @@ function drawMat(ctx, width, height) {
 export function renderResultCard(recordInput, options = {}) {
   const scale = options.scale || 1;
   const withFrame = options.frame !== false;
-  const pad = withFrame ? MAT : 0;
-  const width = Math.round((CARD_W + pad * 2) * scale);
-  const height = Math.round((CARD_H + pad * 2) * scale);
+  const basePad = options.pad ?? (withFrame ? MAT : 0);
+  const padX = Math.round((options.padX ?? basePad) * scale);
+  const padY = Math.round((options.padY ?? basePad) * scale);
+  const width = Math.round(CARD_W * scale + padX * 2);
+  const height = Math.round(CARD_H * scale + padY * 2);
 
   const canvas = document.createElement('canvas');
   canvas.width = width;
@@ -696,7 +706,7 @@ export function renderResultCard(recordInput, options = {}) {
     ctx.shadowBlur = 40 * scale;
     ctx.shadowOffsetY = 14 * scale;
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(pad, pad, CARD_W * scale, CARD_H * scale);
+    ctx.fillRect(padX, padY, CARD_W * scale, CARD_H * scale);
     ctx.restore();
   } else {
     ctx.fillStyle = '#ffffff';
@@ -704,7 +714,7 @@ export function renderResultCard(recordInput, options = {}) {
   }
 
   ctx.save();
-  ctx.translate(pad, pad);
+  ctx.translate(padX, padY);
   ctx.scale(scale, scale);
   ctx.beginPath();
   ctx.rect(0, 0, CARD_W, CARD_H);
@@ -723,7 +733,7 @@ export function renderResultCard(recordInput, options = {}) {
   ctx.restore();
 
   if (withFrame) {
-    drawFrameLabel(ctx, record, width, height);
+    drawFrameLabel(ctx, record, width, height, padX, padY);
   }
 
   return { canvas, record };
@@ -747,7 +757,7 @@ export async function downloadResultCardImage(recordInput, options = {}) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = record.label;
+      link.download = record.label.replace(/\.pdf$/, '.jpg');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -755,4 +765,44 @@ export async function downloadResultCardImage(recordInput, options = {}) {
       resolve(record.label);
     }, 'image/jpeg', options.quality || 0.94);
   });
+}
+
+export async function downloadResultCardPdf(recordInput, options = {}) {
+  const orientation = options.orientation || 'landscape';
+
+  await ensureLogo();
+
+  const pdf = new jsPDF({ orientation, unit: 'pt', format: 'a4', compress: true });
+  const pageW = pdf.internal.pageSize.getWidth();
+  const pageH = pdf.internal.pageSize.getHeight();
+  const margin = options.margin ?? 10;
+
+  const padY = MAT;
+  const padX = Math.max(padY, Math.round(((CARD_H + padY * 2) * (pageW / pageH) - CARD_W) / 2));
+
+  const { canvas, record } = renderResultCard(recordInput, { ...options, padX, padY, frame: true });
+
+  pdf.setProperties({
+    title: `Termly Progress Report — ${record.studentName || 'Student'}`,
+    subject: `${record.school?.name || 'Crea8orz Academy'} • ${record.term || ''} ${record.academicYear || ''}`.trim(),
+    creator: record.school?.name || 'Crea8orz Academy'
+  });
+
+  const fit = Math.min((pageW - margin * 2) / canvas.width, (pageH - margin * 2) / canvas.height);
+  const drawW = canvas.width * fit;
+  const drawH = canvas.height * fit;
+
+  pdf.addImage(
+    canvas.toDataURL('image/jpeg', options.quality || 0.94),
+    'JPEG',
+    (pageW - drawW) / 2,
+    (pageH - drawH) / 2,
+    drawW,
+    drawH,
+    undefined,
+    'FAST'
+  );
+
+  pdf.save(record.label);
+  return record.label;
 }

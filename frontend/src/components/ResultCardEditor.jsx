@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Download, Camera, CheckCircle2, Eye, FileCheck2 } from 'lucide-react';
 import ResultCard from './ResultCard';
-import { downloadResultCardImage, ensureLogo } from '../lib/resultCardImage';
+import { downloadResultCardPdf, ensureLogo } from '../lib/resultCardImage';
 import {
   CLASS_LEVELS,
   CLASS_ARMS,
@@ -118,10 +118,10 @@ export default function ResultCardEditor({
   const handleDownload = async () => {
     setDownloading(true);
     try {
-      await downloadResultCardImage(record, { scale: 1, frame: true, quality: 0.95 });
+      await downloadResultCardPdf(record, { scale: 1, frame: true, quality: 0.95 });
       setStatus(`Saved to your downloads folder as ${fileName}`);
     } catch (error) {
-      setStatus('Could not generate the image. Please try again.');
+      setStatus('Could not generate the PDF. Please try again.');
     } finally {
       setDownloading(false);
       setTimeout(() => setStatus(''), 6000);
@@ -159,7 +159,7 @@ export default function ResultCardEditor({
             <Camera size={15} /> {fileName}
           </span>
           <button type="button" onClick={handleDownload} disabled={downloading} className="btn btn-lime" style={{ padding: '10px 18px', fontSize: '0.9rem' }}>
-            <Download size={16} /> {downloading ? 'Rendering...' : 'Download JPG'}
+            <Download size={16} /> {downloading ? 'Rendering...' : 'Download PDF'}
           </button>
         </div>
       </div>

@@ -1,5 +1,8 @@
 export const CARD_W = 1600;
 export const CARD_H = 1120;
+export const CARD_GUTTER = 44;
+export const PANEL_TOP = 872;
+export const PANEL_HEIGHT = 204;
 
 export const RESULT_THEME = {
   ink: '#0a1f18',
@@ -125,6 +128,15 @@ export function longDate(value) {
   return parsed.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
+export function sessionStamp(academicYear) {
+  const years = String(academicYear || '')
+    .split('/')
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (!years.length) return '';
+  return `${years.join(' / ')} SESSION`;
+}
+
 function slug(value) {
   return String(value || '')
     .replace(/[^A-Za-z0-9]+/g, '_')
@@ -134,7 +146,7 @@ function slug(value) {
 export function cardFileName({ studentName, term, academicYear }) {
   const parts = [slug(studentName), slug(term), slug(academicYear)].filter(Boolean);
   const name = parts.length ? parts.join('_') : 'Crea8orz_Result_Card';
-  return `${name}.jpg`;
+  return `${name}.pdf`;
 }
 
 function hash(text) {

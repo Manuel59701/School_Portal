@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CARD_W, CARD_H, RESULT_THEME, TABLE_COLUMNS, gradeTone, buildRecord } from '../lib/resultCard';
+import { CARD_W, CARD_H, PANEL_HEIGHT, RESULT_THEME, TABLE_COLUMNS, gradeTone, buildRecord, sessionStamp } from '../lib/resultCard';
 import logoImg from '../assets/images/crea8orz_logo.png';
 
 const MONO = 'Consolas, "Courier New", monospace';
@@ -44,6 +44,7 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
   const record = buildRecord(input);
 
   const colTemplate = TABLE_COLUMNS.map((col) => `${col.width}fr`).join(' ');
+  const session = sessionStamp(record.academicYear);
 
   return (
     <div ref={containerRef} style={{ width: '100%' }}>
@@ -303,10 +304,11 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
         </div>
 
         {/* Status + sign-off */}
-        <div style={{ display: 'flex', gap: 28, padding: '16px 44px 0', flex: 1 }}>
+        <div style={{ display: 'flex', gap: 28, padding: '16px 44px 0', flexShrink: 0, alignItems: 'flex-start' }}>
           <div
             style={{
               width: 700,
+              height: PANEL_HEIGHT,
               border: `2px solid ${RESULT_THEME.green}`,
               borderRadius: 10,
               overflow: 'hidden',
@@ -381,12 +383,13 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
 
           <div
             style={{
-              flex: 1,
+              height: PANEL_HEIGHT,
               border: `2px solid ${RESULT_THEME.green}`,
               borderRadius: 10,
               overflow: 'hidden',
               backgroundColor: '#ffffff',
-              position: 'relative'
+              position: 'relative',
+              flexShrink: 0
             }}
           >
             <div
@@ -444,9 +447,12 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
               }}
             >
               <span style={{ fontSize: 19, fontWeight: 800, letterSpacing: '0.5px' }}>VERIFIED</span>
-              <span style={{ fontSize: 9.5, fontWeight: 700, marginTop: 3 }}>FREEDOM WORD INTL</span>
+              <span style={{ fontSize: 9.5, fontWeight: 700, marginTop: 3 }}>CREA8ORZ ACADEMY</span>
               <span style={{ fontSize: 9.5, fontWeight: 700 }}>SECONDARY SCHOOL</span>
               <span style={{ fontSize: 8.5, fontWeight: 600, marginTop: 3 }}>OFFICIAL SCHOOL SEAL</span>
+              {session && (
+                <span style={{ fontSize: 8.5, fontWeight: 600, marginTop: 2 }}>{session}</span>
+              )}
             </div>
           </div>
         </div>
