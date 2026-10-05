@@ -30,7 +30,8 @@ export const SUBJECT_CATALOG = [
   'Reading'
 ];
 
-export const ROSTER_SIZE = 20;
+export const ROSTER_MIN = 30;
+export const ROSTER_MAX = 60;
 
 const MALE_NAMES = [
   'Chukwuma', 'Tariq', 'Emeka', 'Oluwaseun', 'Ibrahim', 'Yusuf', 'Adebayo', 'Kelechi',
@@ -103,7 +104,16 @@ export function seededRandom(seed) {
 
 const rosterCache = new Map();
 
-export function buildRoster(key, size = ROSTER_SIZE) {
+// Derived from a seed of its own, separate from the roster seed below, so that
+// changing ROSTER_MIN/ROSTER_MAX never reshuffles existing students. Saved
+// scores are keyed by student id, so a reshuffle would re-point them at the
+// wrong people.
+export function rosterSize(key) {
+  const random = seededRandom(hashString(`roster-size:${key}`));
+  return ROSTER_MIN + Math.floor(random() * (ROSTER_MAX - ROSTER_MIN + 1));
+}
+
+export function buildRoster(key, size = rosterSize(key)) {
   if (rosterCache.has(key)) return rosterCache.get(key);
 
   const { code, arm } = parseClassKey(key);

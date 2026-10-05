@@ -11,7 +11,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import Crea8orzLogo from './Crea8orzLogo';
-import { buildRoster, classKeyFromStudentId } from '../lib/academics';
+import { buildRoster, classKeyFromStudentId, ROSTER_MIN, ROSTER_MAX } from '../lib/academics';
 import hero1 from '../assets/images/hero1.jpg';
 import hero2 from '../assets/images/hero2.jpg';
 
@@ -505,7 +505,8 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
                   }}>
                     Testing mode: every student logs in with the password{' '}
                     <strong style={{ fontFamily: 'Consolas, "Courier New", monospace' }}>{STUDENT_TEST_PASSWORD}</strong>.
-                    Admission numbers run from <strong>CR8/2026/J1A/001</strong> to <strong>CR8/2026/S3C/020</strong>.
+                    Admission numbers look like <strong>CR8/2026/J1A/001</strong>; each class arm holds between{' '}
+                    {ROSTER_MIN} and {ROSTER_MAX} students, so try any serial in that range.
                   </p>
                 )}
               </div>

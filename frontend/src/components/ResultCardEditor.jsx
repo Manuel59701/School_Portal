@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Download, Camera, CheckCircle2, Eye, FileCheck2 } from 'lucide-react';
+import { Download, Camera, CheckCircle2, Eye, FileCheck2, Search, X } from 'lucide-react';
 import ResultCard from './ResultCard';
 import { downloadResultCardPdf, ensureLogo } from '../lib/resultCardImage';
 import {
@@ -57,6 +57,7 @@ export default function ResultCardEditor({
   const [level, setLevel] = useState(defaultLevel);
   const [arm, setArm] = useState(defaultArm);
   const [studentId, setStudentId] = useState('');
+  const [studentQuery, setStudentQuery] = useState('');
   const [term, setTerm] = useState(defaultTerm);
   const [academicYear, setAcademicYear] = useState(defaultAcademicYear);
   const [reportDate, setReportDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -86,6 +87,20 @@ export default function ResultCardEditor({
   useEffect(() => {
     ensureLogo();
   }, []);
+
+  const studentMatches = useMemo(() => {
+    const needle = studentQuery.trim().toLowerCase();
+    if (!needle) return roster;
+    return roster.filter(
+      (entry) =>
+        entry.name.toLowerCase().includes(needle) ||
+        entry.studentId.toLowerCase().includes(needle)
+    );
+  }, [roster, studentQuery]);
+
+  useEffect(() => {
+    setStudentQuery('');
+  }, [classKey]);
 
   const student = roster.find((entry) => entry.id === studentId) || roster[0];
   const rows = useMemo(
@@ -214,19 +229,95 @@ export default function ResultCardEditor({
             </div>
 
             <div style={{ marginTop: '16px' }}>
-              <label style={labelStyle}>Student</label>
-              <select
-                value={student.id}
-                disabled={Boolean(fixedStudentId)}
-                onChange={(e) => setStudentId(e.target.value)}
-                style={fixedStudentId ? readOnlyStyle : fieldStyle}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <label style={{ ...labelStyle, marginBottom: 0 }}>Student</label>
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#5e7970' }}>
+                  {studentQuery.trim()
+                    ? `${studentMatches.length} of ${roster.length} match`
+                    : `${roster.length} enrolled`}
+                </span>
+              </div>
+
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#5e7970', display: 'flex' }}>
+                  <Search size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={studentQuery}
+                  onChange={(e) => setStudentQuery(e.target.value)}
+                  placeholder="Search by student name or ID"
+                  aria-label="Search students by name or student ID"
+                  style={{ ...fieldStyle, paddingLeft: '38px', paddingRight: studentQuery ? '38px' : '14px' }}
+                  onFocus={(e) => (e.target.style.borderColor = '#003024')}
+                  onBlur={(e) => (e.target.style.borderColor = '#cbd5d0')}
+                />
+                {studentQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setStudentQuery('')}
+                    aria-label="Clear search"
+                    title="Clear search"
+                    style={{
+                      position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      width: '26px', height: '26px', padding: 0,
+                      border: 'none', borderRadius: '7px',
+                      backgroundColor: 'transparent', color: '#5e7970', cursor: 'pointer'
+                    }}
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+              </div>
+
+              <div
+                style={{
+                  marginTop: '10px',
+                  maxHeight: '260px',
+                  overflowY: 'auto',
+                  border: '1px solid #e2e8e4',
+                  borderRadius: 10,
+                  backgroundColor: '#ffffff'
+                }}
               >
-                {roster.map((entry) => (
-                  <option key={entry.id} value={entry.id}>
-                    {entry.name} — {entry.studentId}
-                  </option>
-                ))}
-              </select>
+                {studentMatches.length === 0 && (
+                  <div style={{ padding: '16px 14px', textAlign: 'center', fontSize: '0.85rem', color: '#5e7970', fontWeight: 600 }}>
+                    No students match &ldquo;{studentQuery.trim()}&rdquo;.
+                  </div>
+                )}
+
+                {studentMatches.map((entry) => {
+                  const isSelected = entry.id === student.id;
+                  return (
+                    <button
+                      key={entry.id}
+                      type="button"
+                      disabled={Boolean(fixedStudentId)}
+                      onClick={() => {
+                        setStudentId(entry.id);
+                        setStudentQuery('');
+                      }}
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '12px',
+                        textAlign: 'left',
+                        padding: '10px 14px',
+                        border: 'none',
+                        borderBottom: '1px solid #e2e8e4',
+                        backgroundColor: isSelected ? 'rgba(168, 240, 68, 0.22)' : '#ffffff',
+                        cursor: fixedStudentId ? 'default' : 'pointer'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#003024' }}>{entry.name}</span>
+                      <span style={{ fontSize: '0.78rem', color: '#5e7970', fontFamily: 'Consolas, "Courier New", monospace', whiteSpace: 'nowrap' }}>{entry.studentId}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div style={{ marginTop: '16px', padding: '14px 16px', backgroundColor: '#f4f7f5', border: '1px solid #e2e8e4', borderRadius: 12 }}>
