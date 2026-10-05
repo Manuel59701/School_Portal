@@ -187,6 +187,65 @@ export function committedCountForStudent(stateSnapshot, session, classKey, stude
   return Object.keys(classBucket(sessionBucket(stateSnapshot, session).committed, classKey)[studentId] || {}).length;
 }
 
+// Builds one row per class + subject that has any teacher activity in the session,
+// so the admin registry reflects real commits and real in-progress drafts.
+export function getResultsRegistry(stateSnapshot, session) {
+  const sessionData = sessionBucket(stateSnapshot, session);
+  const scores = sessionData.scores || {};
+  const committed = sessionData.committed || {};
+  const rows = [];
+
+  // Walk both buckets: a class can hold commits even with no draft scores left.
+  const classKeys = [...new Set([...Object.keys(scores), ...Object.keys(committed)])];
+
+  classKeys.forEach((classKey) => {
+    const classScores = classBucket(scores, classKey);
+    const classCommitted = classBucket(committed, classKey);
+    const scoredIds = Object.keys(classScores);
+    const committedIds = Object.keys(classCommitted);
+
+    if (scoredIds.length === 0 && committedIds.length === 0) return;
+
+    const subjects = new Set();
+    scoredIds.forEach((id) => Object.keys(classScores[id] || {}).forEach((s) => subjects.add(s)));
+    committedIds.forEach((id) => Object.keys(classCommitted[id] || {}).forEach((s) => subjects.add(s)));
+
+    subjects.forEach((subject) => {
+      let draftCount = 0;
+      let publishedCount = 0;
+      let committedAt = '';
+
+      scoredIds.forEach((id) => {
+        if ((classScores[id] || {})[subject]) draftCount += 1;
+      });
+
+      committedIds.forEach((id) => {
+        const entry = (classCommitted[id] || {})[subject];
+        if (!entry) return;
+        publishedCount += 1;
+        if ((entry.committedAt || '') > committedAt) committedAt = entry.committedAt || '';
+      });
+
+      rows.push({
+        classKey,
+        subject,
+        draftCount,
+        publishedCount,
+        published: publishedCount > 0,
+        committedAt,
+        lastActivity: Date.parse(committedAt) || 0
+      });
+    });
+  });
+
+  return rows.sort(
+    (a, b) =>
+      b.lastActivity - a.lastActivity ||
+      a.classKey.localeCompare(b.classKey) ||
+      a.subject.localeCompare(b.subject)
+  );
+}
+
 export function getMeta(key, fallback = '') {
   const value = state.meta ? state.meta[key] : undefined;
   return value === undefined ? fallback : value;

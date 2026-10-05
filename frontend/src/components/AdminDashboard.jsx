@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { 
   School, 
   Users, 
@@ -12,11 +12,89 @@ import {
   Search,
   Filter,
   BarChart2,
-  RotateCcw
+  RotateCcw,
+  Pencil,
+  Trash2,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { INITIAL_CLASSES, INITIAL_TEACHERS, INITIAL_STUDENTS } from '../mockData';
+import { CLASS_LEVELS, CLASS_ARMS, classKey, rosterSize, TERMS, ACADEMIC_YEARS } from '../lib/academics';
 import Crea8orzLogo from './Crea8orzLogo';
-import { clearAllResults } from '../lib/portalStore';
+import { clearAllResults, getResultsRegistry, sessionKey, usePortalState } from '../lib/portalStore';
+
+const CLASS_PAGE_SIZE = 10;
+const DELETE_GRACE_SECONDS = 30;
+
+function paginate(items, page, size = CLASS_PAGE_SIZE) {
+  const totalPages = Math.max(1, Math.ceil(items.length / size));
+  const current = Math.min(page, totalPages);
+  return {
+    totalPages,
+    current,
+    visible: items.slice((current - 1) * size, current * size)
+  };
+}
+
+function PaginationBar({ current, totalPages, total, noun, onChange }) {
+  if (totalPages <= 1) return null;
+
+  const buttonStyle = (isCurrent) => ({
+    minWidth: '34px',
+    padding: '7px 10px',
+    borderRadius: 8,
+    border: isCurrent ? '1px solid #003024' : '1px solid #cbd5d0',
+    backgroundColor: isCurrent ? '#003024' : '#ffffff',
+    color: isCurrent ? '#ffffff' : '#003024',
+    fontSize: '0.85rem',
+    fontWeight: 700,
+    cursor: 'pointer'
+  });
+
+  const windowSize = Math.min(totalPages, 5);
+  const start = Math.max(1, Math.min(current - Math.floor(windowSize / 2), totalPages - windowSize + 1));
+  const numbers = Array.from({ length: windowSize }, (_, index) => start + index);
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginTop: '18px', flexWrap: 'wrap' }}>
+      <span style={{ fontSize: '0.83rem', color: '#5e7970' }}>
+        Showing {(current - 1) * CLASS_PAGE_SIZE + 1}&ndash;{Math.min(current * CLASS_PAGE_SIZE, total)} of {total} {noun}
+      </span>
+
+      <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          onClick={() => onChange(Math.max(1, current - 1))}
+          disabled={current === 1}
+          style={{ ...buttonStyle(false), opacity: current === 1 ? 0.45 : 1, cursor: current === 1 ? 'default' : 'pointer' }}
+        >
+          Prev
+        </button>
+
+        {numbers.map((number) => (
+          <button
+            key={number}
+            type="button"
+            onClick={() => onChange(number)}
+            aria-current={number === current ? 'page' : undefined}
+            style={buttonStyle(number === current)}
+          >
+            {number}
+          </button>
+        ))}
+
+        <button
+          type="button"
+          onClick={() => onChange(Math.min(totalPages, current + 1))}
+          disabled={current === totalPages}
+          style={{ ...buttonStyle(false), opacity: current === totalPages ? 0.45 : 1, cursor: current === totalPages ? 'default' : 'pointer' }}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('classes');
@@ -26,14 +104,73 @@ export default function AdminDashboard({ user, onLogout }) {
   const [newClassModal, setNewClassModal] = useState(false);
   const [newTeacherModal, setNewTeacherModal] = useState(false);
 
-  const [newClassName, setNewClassName] = useState('');
-  const [newClassLevel, setNewClassLevel] = useState('secondary');
-  const [newClassSection, setNewClassSection] = useState('Senior Secondary');
+  const [newClassLevel, setNewClassLevel] = useState(CLASS_LEVELS[0]);
+  const [newClassArm, setNewClassArm] = useState(CLASS_ARMS[0]);
+  const [classError, setClassError] = useState('');
 
   const [newTeacherName, setNewTeacherName] = useState('');
   const [newTeacherEmail, setNewTeacherEmail] = useState('');
   const [newTeacherSubject, setNewTeacherSubject] = useState('');
-  const [newTeacherClass, setNewTeacherClass] = useState('SSS 2 Sapphire (Tech/Science)');
+  const [newTeacherClass, setNewTeacherClass] = useState('SSS 2 A');
+
+  const [editingTeacher, setEditingTeacher] = useState(null);
+  const [editTeacherName, setEditTeacherName] = useState('');
+  const [editTeacherEmail, setEditTeacherEmail] = useState('');
+  const [editTeacherSubject, setEditTeacherSubject] = useState('');
+  const [editTeacherClass, setEditTeacherClass] = useState('SSS 2 A');
+  const [editTeacherPassword, setEditTeacherPassword] = useState('');
+  const [showEditPassword, setShowEditPassword] = useState(false);
+  const [editTeacherError, setEditTeacherError] = useState('');
+
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteCountdown, setDeleteCountdown] = useState(DELETE_GRACE_SECONDS);
+  const [classPage, setClassPage] = useState(1);
+  const [teacherPage, setTeacherPage] = useState(1);
+  const [resultPage, setResultPage] = useState(1);
+  const [resultTab, setResultTab] = useState('published');
+  const [resultYear, setResultYear] = useState(ACADEMIC_YEARS[0]);
+  const [resultTerm, setResultTerm] = useState(TERMS[1] || TERMS[0]);
+
+  const portal = usePortalState();
+  const registry = useMemo(
+    () => getResultsRegistry(portal, sessionKey(resultYear, resultTerm)),
+    [portal, resultYear, resultTerm]
+  );
+
+  const publishedRows = useMemo(() => registry.filter((row) => row.published), [registry]);
+  const pendingRows = useMemo(() => registry.filter((row) => !row.published), [registry]);
+  const activeResultRows = resultTab === 'published' ? publishedRows : pendingRows;
+
+  const classPagination = paginate(classesList, classPage);
+  const teacherPagination = paginate(teachersList, teacherPage);
+  const resultPagination = paginate(activeResultRows, resultPage);
+
+  const classMasterFor = (armName) => {
+    const match = teachersList.find((t) => t.classAssigned === armName);
+    return match ? match.name : 'Unassigned';
+  };
+
+  useEffect(() => {
+    setClassPage(1);
+  }, [classesList.length]);
+
+  useEffect(() => {
+    setTeacherPage(1);
+  }, [teachersList.length]);
+
+  useEffect(() => {
+    setResultPage(1);
+  }, [resultTab, resultYear, resultTerm, registry.length]);
+
+  // Destructive-action grace period: the confirm button stays locked for 30s.
+  useEffect(() => {
+    if (!deleteTarget) return undefined;
+    setDeleteCountdown(DELETE_GRACE_SECONDS);
+    const timer = setInterval(() => {
+      setDeleteCountdown((prev) => (prev <= 1 ? 0 : prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [deleteTarget]);
 
   const handleResetAll = () => {
     const ok = window.confirm(
@@ -57,16 +194,24 @@ export default function AdminDashboard({ user, onLogout }) {
 
   const handleAddClass = (e) => {
     e.preventDefault();
-    if (!newClassName) return;
-    const newEntry = {
-      id: Date.now(),
-      name: newClassName,
-      level: newClassLevel,
-      section: newClassSection,
-      studentCount: 0
-    };
-    setClassesList([...classesList, newEntry]);
-    setNewClassName('');
+    const name = classKey(newClassLevel, newClassArm);
+
+    if (classesList.some((c) => c.name === name)) {
+      setClassError(`${name} already exists. All ${CLASS_LEVELS.length * CLASS_ARMS.length} class arms (${CLASS_LEVELS[0]} – ${CLASS_LEVELS[CLASS_LEVELS.length - 1]} × ${CLASS_ARMS.join(', ')}) are active.`);
+      return;
+    }
+
+    setClassError('');
+    setClassesList([
+      ...classesList,
+      {
+        id: Date.now(),
+        name,
+        level: newClassLevel.startsWith('JSS') ? 'junior' : 'senior',
+        section: newClassLevel.startsWith('JSS') ? 'Junior Secondary' : 'Senior Secondary',
+        studentCount: rosterSize(name)
+      }
+    ]);
     setNewClassModal(false);
   };
 
@@ -79,6 +224,7 @@ export default function AdminDashboard({ user, onLogout }) {
       email: newTeacherEmail,
       subject: newTeacherSubject,
       classAssigned: newTeacherClass,
+      password: '',
       status: "Active"
     };
     setTeachersList([...teachersList, newEntry]);
@@ -86,6 +232,72 @@ export default function AdminDashboard({ user, onLogout }) {
     setNewTeacherEmail('');
     setNewTeacherSubject('');
     setNewTeacherModal(false);
+  };
+
+  const openEditTeacher = (tch) => {
+    setEditingTeacher(tch);
+    setEditTeacherName(tch.name || '');
+    setEditTeacherEmail(tch.email || '');
+    setEditTeacherSubject(tch.subject || '');
+    setEditTeacherClass(tch.classAssigned || CLASS_LEVELS[0] + ' A');
+    setEditTeacherPassword('');
+    setShowEditPassword(false);
+    setEditTeacherError('');
+  };
+
+  const handleSaveTeacher = (e) => {
+    e.preventDefault();
+    if (!editingTeacher) return;
+
+    if (!editTeacherName.trim()) {
+      setEditTeacherError('Faculty name is required.');
+      return;
+    }
+    if (!editTeacherEmail.trim()) {
+      setEditTeacherError('Institutional email is required.');
+      return;
+    }
+    if (editTeacherPassword && editTeacherPassword.length < 6) {
+      setEditTeacherError('New password must be at least 6 characters.');
+      return;
+    }
+    const duplicateEmail = teachersList.some(
+      (t) => t.id !== editingTeacher.id && t.email.trim().toLowerCase() === editTeacherEmail.trim().toLowerCase()
+    );
+    if (duplicateEmail) {
+      setEditTeacherError('Another staff account already uses that email.');
+      return;
+    }
+
+    setTeachersList(
+      teachersList.map((t) =>
+        t.id === editingTeacher.id
+          ? {
+              ...t,
+              name: editTeacherName.trim(),
+              email: editTeacherEmail.trim(),
+              subject: editTeacherSubject.trim(),
+              classAssigned: editTeacherClass,
+              ...(editTeacherPassword ? { password: editTeacherPassword } : {})
+            }
+          : t
+      )
+    );
+    setEditingTeacher(null);
+  };
+
+  const handleDeleteTeacher = (tch) => {
+    setDeleteTarget(tch);
+  };
+
+  const cancelDeleteTeacher = () => {
+    setDeleteTarget(null);
+  };
+
+  const confirmDeleteTeacher = () => {
+    if (!deleteTarget || deleteCountdown > 0) return;
+    setTeachersList(teachersList.filter((t) => t.id !== deleteTarget.id));
+    setDeleteTarget(null);
   };
 
   return (
@@ -132,7 +344,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 <School size={20} color="#003024" />
               </div>
               <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#003024' }}>{classesList.length}</div>
-              <div style={{ fontSize: '0.8rem', color: '#5e7970' }}>Nursery, Primary & Secondary</div>
+                <div style={{ fontSize: '0.8rem', color: '#5e7970' }}>Junior &amp; Senior Secondary</div>
             </div>
 
             <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
@@ -203,7 +415,7 @@ export default function AdminDashboard({ user, onLogout }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <div>
                   <h3 style={{ fontSize: '1.3rem', color: '#003024', fontWeight: 800 }}>Class Structure & Academic Divisions</h3>
-                  <p style={{ color: '#5e7970', fontSize: '0.9rem' }}>Configure Nursery, Primary, and Secondary grade classes and arms</p>
+                  <p style={{ color: '#5e7970', fontSize: '0.9rem' }}>Class arms from {CLASS_LEVELS[0]} to {CLASS_LEVELS[CLASS_LEVELS.length - 1]} ({CLASS_ARMS.join(', ')}) &mdash; the same arms teachers and students select</p>
                 </div>
                 <button onClick={() => setNewClassModal(true)} className="btn btn-lime">
                   <Plus size={18} /> Create New Class Arm
@@ -222,11 +434,11 @@ export default function AdminDashboard({ user, onLogout }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {classesList.map((cls) => (
+                    {classPagination.visible.map((cls) => (
                       <tr key={cls.id} style={{ borderBottom: '1px solid #f1f5f3' }}>
                         <td style={{ padding: '14px 16px', fontWeight: 800, color: '#003024' }}>{cls.name}</td>
                         <td style={{ padding: '14px 16px', textTransform: 'capitalize' }}>
-                          <span className={`badge ${cls.level === 'nursery' ? 'badge-primary' : cls.level === 'primary' ? 'badge-emerald' : 'badge-lime'}`}>
+                          <span className={`badge ${cls.level === 'junior' ? 'badge-emerald' : 'badge-lime'}`}>
                             {cls.level}
                           </span>
                         </td>
@@ -240,6 +452,14 @@ export default function AdminDashboard({ user, onLogout }) {
                   </tbody>
                 </table>
               </div>
+
+              <PaginationBar
+                current={classPagination.current}
+                totalPages={classPagination.totalPages}
+                total={classesList.length}
+                noun="class arms"
+                onChange={setClassPage}
+              />
             </div>
           )}
 
@@ -264,11 +484,13 @@ export default function AdminDashboard({ user, onLogout }) {
                       <th style={{ padding: '14px 16px' }}>Institutional Email</th>
                       <th style={{ padding: '14px 16px' }}>Specialization Subject</th>
                       <th style={{ padding: '14px 16px' }}>Assigned Class Master</th>
-                      <th style={{ padding: '14px 16px', borderTopRightRadius: '8px' }}>Account Status</th>
+                      <th style={{ padding: '14px 16px' }}>Credentials</th>
+                      <th style={{ padding: '14px 16px' }}>Account Status</th>
+                      <th style={{ padding: '14px 16px', borderTopRightRadius: '8px' }}>Manage</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {teachersList.map((tch) => (
+                    {teacherPagination.visible.map((tch) => (
                       <tr key={tch.id} style={{ borderBottom: '1px solid #f1f5f3' }}>
                         <td style={{ padding: '14px 16px', fontWeight: 800, color: '#003024' }}>{tch.name}</td>
                         <td style={{ padding: '14px 16px', color: '#003024', fontWeight: 600 }}>{tch.email}</td>
@@ -279,13 +501,41 @@ export default function AdminDashboard({ user, onLogout }) {
                           </span>
                         </td>
                         <td style={{ padding: '14px 16px' }}>
+                          <span className={`badge ${tch.password ? 'badge-emerald' : 'badge-gold'}`}>
+                            {tch.password ? 'Password Set' : 'No Password'}
+                          </span>
+                        </td>
+                        <td style={{ padding: '14px 16px' }}>
                           <span className="badge badge-lime">Verified Active</span>
+                        </td>
+                        <td style={{ padding: '14px 16px' }}>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            <button type="button" onClick={() => openEditTeacher(tch)} className="btn btn-outline" style={{ padding: '7px 12px', fontSize: '0.78rem' }}>
+                              <Pencil size={14} /> Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteTeacher(tch)}
+                              className="btn btn-outline"
+                              style={{ padding: '7px 12px', fontSize: '0.78rem', color: '#b91c1c', borderColor: '#fecaca' }}
+                            >
+                              <Trash2 size={14} /> Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+
+              <PaginationBar
+                current={teacherPagination.current}
+                totalPages={teacherPagination.totalPages}
+                total={teachersList.length}
+                noun="staff accounts"
+                onChange={setTeacherPage}
+              />
             </div>
           )}
 
@@ -295,9 +545,74 @@ export default function AdminDashboard({ user, onLogout }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
                 <div>
                   <h3 style={{ fontSize: '1.3rem', color: '#003024', fontWeight: 800 }}>Crea8orz Result Registry Overview</h3>
-                  <p style={{ color: '#5e7970', fontSize: '0.9rem' }}>Audit and review uploaded termly performance sheets across all departments</p>
+                  <p style={{ color: '#5e7970', fontSize: '0.9rem' }}>Audit published results and track subjects teachers have yet to publish</p>
                 </div>
-                <span className="badge badge-lime" style={{ padding: '6px 14px' }}>Second Term 2025/2026 Session</span>
+
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <select
+                    value={resultTerm}
+                    onChange={(e) => setResultTerm(e.target.value)}
+                    aria-label="Result term"
+                    style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none', fontWeight: 700, color: '#003024' }}
+                  >
+                    {TERMS.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={resultYear}
+                    onChange={(e) => setResultYear(e.target.value)}
+                    aria-label="Academic year"
+                    style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none', fontWeight: 700, color: '#003024' }}
+                  >
+                    {ACADEMIC_YEARS.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => setResultTab('published')}
+                  aria-pressed={resultTab === 'published'}
+                  style={{
+                    padding: '10px 18px',
+                    borderRadius: 10,
+                    border: resultTab === 'published' ? '2px solid #003024' : '1px solid #cbd5d0',
+                    backgroundColor: resultTab === 'published' ? '#003024' : '#ffffff',
+                    color: resultTab === 'published' ? '#ffffff' : '#003024',
+                    fontWeight: 800,
+                    fontSize: '0.88rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <CheckCircle size={16} /> Published ({publishedRows.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setResultTab('pending')}
+                  aria-pressed={resultTab === 'pending'}
+                  style={{
+                    padding: '10px 18px',
+                    borderRadius: 10,
+                    border: resultTab === 'pending' ? '2px solid #d97706' : '1px solid #cbd5d0',
+                    backgroundColor: resultTab === 'pending' ? '#fef3c7' : '#ffffff',
+                    color: '#92400e',
+                    fontWeight: 800,
+                    fontSize: '0.88rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <FileSpreadsheet size={16} /> Pending ({pendingRows.length})
+                </button>
               </div>
 
               <div style={{ overflowX: 'auto' }}>
@@ -305,41 +620,51 @@ export default function AdminDashboard({ user, onLogout }) {
                   <thead>
                     <tr style={{ backgroundColor: '#003024', color: 'white' }}>
                       <th style={{ padding: '14px 16px', borderTopLeftRadius: '8px' }}>Class</th>
-                      <th style={{ padding: '14px 16px' }}>Subject Track</th>
+                      <th style={{ padding: '14px 16px' }}>Subject</th>
                       <th style={{ padding: '14px 16px' }}>Class Master</th>
-                      <th style={{ padding: '14px 16px' }}>Submission Method</th>
-                      <th style={{ padding: '14px 16px' }}>Status</th>
-                      <th style={{ padding: '14px 16px', borderTopRightRadius: '8px' }}>Approval</th>
+                      <th style={{ padding: '14px 16px' }}>Drafts Entered</th>
+                      <th style={{ padding: '14px 16px' }}>Published</th>
+                      <th style={{ padding: '14px 16px', borderTopRightRadius: '8px' }}>Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr style={{ borderBottom: '1px solid #f1f5f3' }}>
-                      <td style={{ padding: '14px 16px', fontWeight: 800 }}>SSS 2 Sapphire (Tech/Science)</td>
-                      <td style={{ padding: '14px 16px' }}>Physics & Computer Science</td>
-                      <td style={{ padding: '14px 16px' }}>Dr. Sarah Adebayo</td>
-                      <td style={{ padding: '14px 16px', color: '#003024', fontWeight: 600 }}>OCR Snapshot + Direct Form</td>
-                      <td style={{ padding: '14px 16px' }}><span className="badge badge-lime">Published to Students</span></td>
-                      <td style={{ padding: '14px 16px', color: '#003024', fontWeight: 800 }}>Approved</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid #f1f5f3' }}>
-                      <td style={{ padding: '14px 16px', fontWeight: 800 }}>JSS 2 Gold</td>
-                      <td style={{ padding: '14px 16px' }}>English Studies</td>
-                      <td style={{ padding: '14px 16px' }}>Mr. Chukwuemeka Obi</td>
-                      <td style={{ padding: '14px 16px' }}>Direct Form</td>
-                      <td style={{ padding: '14px 16px' }}><span className="badge badge-lime">Published to Students</span></td>
-                      <td style={{ padding: '14px 16px', color: '#003024', fontWeight: 800 }}>Approved</td>
-                    </tr>
-                    <tr style={{ borderBottom: '1px solid #f1f5f3' }}>
-                      <td style={{ padding: '14px 16px', fontWeight: 800 }}>Primary 4 Emerald</td>
-                      <td style={{ padding: '14px 16px' }}>Basic Science & Tech</td>
-                      <td style={{ padding: '14px 16px' }}>Mrs. Fatima Bello</td>
-                      <td style={{ padding: '14px 16px' }}>Direct Form</td>
-                      <td style={{ padding: '14px 16px' }}><span className="badge badge-gold">Under Review</span></td>
-                      <td style={{ padding: '14px 16px', color: '#d97706', fontWeight: 700 }}>Pending Lock</td>
-                    </tr>
+                    {resultPagination.visible.length === 0 && (
+                      <tr>
+                        <td colSpan={6} style={{ padding: '32px 16px', textAlign: 'center', color: '#5e7970', fontWeight: 600 }}>
+                          {resultTab === 'published'
+                            ? `No published results for ${resultTerm} ${resultYear}. Teachers appear here once they commit a subject.`
+                            : `Nothing pending. Every subject with entered drafts has been published for ${resultTerm} ${resultYear}.`}
+                        </td>
+                      </tr>
+                    )}
+
+                    {resultPagination.visible.map((row) => (
+                      <tr key={`${row.classKey}-${row.subject}`} style={{ borderBottom: '1px solid #f1f5f3' }}>
+                        <td style={{ padding: '14px 16px', fontWeight: 800, color: '#003024' }}>{row.classKey}</td>
+                        <td style={{ padding: '14px 16px', color: '#334d44', fontWeight: 600 }}>{row.subject}</td>
+                        <td style={{ padding: '14px 16px' }}>{classMasterFor(row.classKey)}</td>
+                        <td style={{ padding: '14px 16px', color: '#334d44' }}>{row.draftCount}</td>
+                        <td style={{ padding: '14px 16px', color: '#334d44' }}>{row.publishedCount}</td>
+                        <td style={{ padding: '14px 16px' }}>
+                          {row.published ? (
+                            <span className="badge badge-lime">Published to Students</span>
+                          ) : (
+                            <span className="badge badge-gold">Awaiting Publish</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
+
+              <PaginationBar
+                current={resultPagination.current}
+                totalPages={resultPagination.totalPages}
+                total={activeResultRows.length}
+                noun={resultTab === 'published' ? 'published subjects' : 'pending subjects'}
+                onChange={setResultPage}
+              />
             </div>
           )}
 
@@ -394,43 +719,48 @@ export default function AdminDashboard({ user, onLogout }) {
 
             <form onSubmit={handleAddClass} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Class Arm Name</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. SSS 1 Ruby (Tech/Engineering)"
-                  value={newClassName}
-                  onChange={(e) => setNewClassName(e.target.value)}
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none' }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Level Scope</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Academic Level</label>
                 <select
                   value={newClassLevel}
                   onChange={(e) => setNewClassLevel(e.target.value)}
                   style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none' }}
                 >
-                  <option value="nursery">Nursery / Early Years</option>
-                  <option value="primary">Primary</option>
-                  <option value="secondary">Secondary</option>
+                  {CLASS_LEVELS.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
                 </select>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Section</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Senior Secondary"
-                  value={newClassSection}
-                  onChange={(e) => setNewClassSection(e.target.value)}
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Class Arm</label>
+                <select
+                  value={newClassArm}
+                  onChange={(e) => setNewClassArm(e.target.value)}
                   style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none' }}
-                />
+                >
+                  {CLASS_ARMS.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
               </div>
 
+              <div style={{ padding: '14px 16px', backgroundColor: '#f4f7f5', border: '1px solid #e2e8e4', borderRadius: 12 }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#5e7970', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Class name</div>
+                <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#003024', marginTop: '6px' }}>{classKey(newClassLevel, newClassArm)}</div>
+                <div style={{ fontSize: '0.85rem', color: '#334d44', marginTop: '3px' }}>
+                  {newClassLevel.startsWith('JSS') ? 'Junior Secondary' : 'Senior Secondary'} &middot; enrolled{' '}
+                  {rosterSize(classKey(newClassLevel, newClassArm))} students
+                </div>
+              </div>
+
+              {classError && (
+                <div style={{ padding: '12px 14px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, color: '#b91c1c', fontSize: '0.85rem', fontWeight: 600 }}>
+                  {classError}
+                </div>
+              )}
+
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
-                <button type="button" onClick={() => setNewClassModal(false)} className="btn btn-outline">Cancel</button>
+                <button type="button" onClick={() => { setNewClassModal(false); setClassError(''); }} className="btn btn-outline">Cancel</button>
                 <button type="submit" className="btn btn-lime">Create Class</button>
               </div>
             </form>
@@ -497,6 +827,193 @@ export default function AdminDashboard({ user, onLogout }) {
                 <button type="submit" className="btn btn-lime">Register Account</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Edit Teacher */}
+      {editingTeacher && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #003024', maxHeight: '90vh', overflowY: 'auto' }}>
+            <h3 style={{ fontSize: '1.4rem', color: '#003024', fontWeight: 800, marginBottom: '8px' }}>Edit Staff Account</h3>
+            <p style={{ color: '#5e7970', fontSize: '0.9rem', marginBottom: '20px' }}>
+              Update {editingTeacher.name}&rsquo;s details or reset their portal password
+            </p>
+
+            <form onSubmit={handleSaveTeacher} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Teacher Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={editTeacherName}
+                  onChange={(e) => setEditTeacherName(e.target.value)}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Institutional Email</label>
+                <input
+                  type="email"
+                  required
+                  value={editTeacherEmail}
+                  onChange={(e) => setEditTeacherEmail(e.target.value)}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Subject</label>
+                <input
+                  type="text"
+                  value={editTeacherSubject}
+                  onChange={(e) => setEditTeacherSubject(e.target.value)}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>Assigned Class Arm</label>
+                <select
+                  value={editTeacherClass}
+                  onChange={(e) => setEditTeacherClass(e.target.value)}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5d0', outline: 'none' }}
+                >
+                  {classesList.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#003024', marginBottom: '6px' }}>New Password</label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showEditPassword ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    placeholder={editingTeacher.password ? 'Leave blank to keep current password' : 'e.g. Crea8orz2026'}
+                    value={editTeacherPassword}
+                    onChange={(e) => setEditTeacherPassword(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '10px 44px 10px 14px',
+                      borderRadius: '8px',
+                      border: '1px solid #cbd5d0',
+                      outline: 'none'
+                    }}
+                    onFocus={(e) => (e.target.style.borderColor = '#003024')}
+                    onBlur={(e) => (e.target.style.borderColor = '#cbd5d0')}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPassword((prev) => !prev)}
+                    aria-label={showEditPassword ? 'Hide password' : 'Show password'}
+                    title={showEditPassword ? 'Hide password' : 'Show password'}
+                    style={{
+                      position: 'absolute',
+                      right: '6px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '30px',
+                      height: '30px',
+                      padding: 0,
+                      background: 'transparent',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: showEditPassword ? '#003024' : '#5e7970',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(0, 48, 36, 0.07)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                  >
+                    {showEditPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
+                </div>
+                <span style={{ display: 'block', fontSize: '0.78rem', color: '#5e7970', marginTop: '5px' }}>
+                  Minimum 6 characters. Leave blank to keep the existing password.
+                </span>
+              </div>
+
+              {editTeacherError && (
+                <div style={{ padding: '12px 14px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, color: '#b91c1c', fontSize: '0.85rem', fontWeight: 600 }}>
+                  {editTeacherError}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
+                <button type="button" onClick={() => setEditingTeacher(null)} className="btn btn-outline">Cancel</button>
+                <button type="submit" className="btn btn-lime">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Confirm Delete Teacher */}
+      {deleteTarget && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="delete-teacher-heading"
+            style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #b91c1c' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '42px', height: '42px', borderRadius: '12px', backgroundColor: '#fef2f2', color: '#b91c1c', flexShrink: 0 }}>
+                <Trash2 size={20} />
+              </span>
+              <h3 id="delete-teacher-heading" style={{ fontSize: '1.3rem', color: '#b91c1c', fontWeight: 800, margin: 0 }}>
+                Delete Staff Account
+              </h3>
+            </div>
+
+            <p style={{ color: '#334d44', fontSize: '0.95rem', lineHeight: 1.55, marginBottom: '12px' }}>
+              Performing this action deletes this account and is <strong>not reversible</strong>. Are you sure you want to delete
+              the <strong style={{ color: '#003024' }}>&ldquo;{deleteTarget.name}&rdquo;</strong> account?
+            </p>
+
+            <div style={{ padding: '12px 14px', backgroundColor: '#f8faf9', border: '1px solid #e2e8e4', borderRadius: 10, fontSize: '0.85rem', color: '#334d44' }}>
+              <div style={{ fontWeight: 700, color: '#003024' }}>{deleteTarget.email}</div>
+              <div style={{ marginTop: '3px' }}>
+                {deleteTarget.classAssigned}
+                {deleteTarget.subject ? ` \u00b7 ${deleteTarget.subject}` : ''}
+              </div>
+              <div style={{ marginTop: '6px', color: '#5e7970' }}>
+                Results this teacher already published stay in the registry, but the class will show as Unassigned.
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
+              <button type="button" onClick={cancelDeleteTeacher} className="btn btn-outline">
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteTeacher}
+                disabled={deleteCountdown > 0}
+                aria-disabled={deleteCountdown > 0}
+                style={{
+                  backgroundColor: deleteCountdown > 0 ? '#e5e7eb' : '#b91c1c',
+                  color: deleteCountdown > 0 ? '#9ca3af' : '#ffffff',
+                  border: '1px solid ' + (deleteCountdown > 0 ? '#e5e7eb' : '#b91c1c'),
+                  padding: '10px 18px',
+                  borderRadius: 8,
+                  fontWeight: 800,
+                  fontSize: '0.88rem',
+                  cursor: deleteCountdown > 0 ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {deleteCountdown > 0 ? `Confirm Delete (${deleteCountdown})` : 'Confirm Delete'}
+              </button>
+            </div>
+
+            {deleteCountdown > 0 && (
+              <p style={{ marginTop: '10px', textAlign: 'right', fontSize: '0.78rem', color: '#5e7970', fontWeight: 600 }}>
+                Confirmation unlocks in {deleteCountdown} second{deleteCountdown === 1 ? '' : 's'}
+              </p>
+            )}
           </div>
         </div>
       )}
