@@ -391,9 +391,15 @@ export default function ResultCardEditor({
             </label>
 
             <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px solid #e2e8e4', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <span className="badge badge-primary">Average {record.averageText}</span>
                 <span className="badge badge-gold">{record.certificates} certificate{record.certificates === 1 ? '' : 's'}</span>
+                {record.draftSubjects > 0 && (
+                  <span className="badge badge-gold">{record.draftSubjects} uncommitted draft{record.draftSubjects === 1 ? '' : 's'}</span>
+                )}
+                {!record.hasResults && (
+                  <span className="badge badge-primary">No results published yet</span>
+                )}
               </div>
               <button type="button" onClick={() => setShowPreview((prev) => !prev)} className="btn btn-outline" style={{ padding: '8px 14px', fontSize: '0.82rem' }}>
                 <Eye size={14} /> {showPreview ? 'Hide card' : 'Show card'}
@@ -405,6 +411,11 @@ export default function ResultCardEditor({
                 Awaiting commit: {pendingSubjects.join(', ')}
               </p>
             )}
+
+            <p style={{ fontSize: '0.8rem', color: '#92400e', marginTop: '10px', fontWeight: 600 }}>
+              Amber rows are uncommitted drafts. They are preview-only and are excluded from the average, certificates and
+              honour roll &mdash; a subject counts once a teacher commits it.
+            </p>
           </div>
         </div>
         )}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CARD_W, CARD_H, PANEL_HEIGHT, RESULT_THEME, TABLE_COLUMNS, gradeTone, buildRecord, sessionStamp } from '../lib/resultCard';
+import { CARD_W, CARD_H, PANEL_HEIGHT, RESULT_THEME, TABLE_COLUMNS, gradeTone, rowTone, ROW_TONES, buildRecord, sessionStamp } from '../lib/resultCard';
 import logoImg from '../assets/images/crea8orz_logo.png';
 
 const MONO = 'Consolas, "Courier New", monospace';
@@ -214,7 +214,12 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
               ))}
             </div>
 
-            {record.rows.map((row, index) => (
+            {record.rows.map((row, index) => {
+              const tone = ROW_TONES[rowTone(row)];
+              const isPending = row.pending;
+              const cellValue = (key) => (isPending ? tone.value : row[key]);
+
+              return (
               <React.Fragment key={row.subject}>
                 <div
                   style={{
@@ -225,6 +230,7 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
                     fontSize: 15.5,
                     fontWeight: 600,
                     borderTop: '1px solid #d7e0db',
+                    color: row.draft ? tone.valueColor : RESULT_THEME.ink,
                     backgroundColor: index % 2 === 0 ? '#ffffff' : RESULT_THEME.rowAlt,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden'
@@ -244,11 +250,11 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
                       fontWeight: 600,
                       borderTop: '1px solid #d7e0db',
                       borderLeft: '1px solid #d7e0db',
-                      color: row.pending ? '#b6c2bc' : RESULT_THEME.ink,
+                      color: tone.valueColor || RESULT_THEME.ink,
                       backgroundColor: index % 2 === 0 ? '#ffffff' : RESULT_THEME.rowAlt
                     }}
                   >
-                    {row.pending ? '—' : row[key]}
+                    {cellValue(key)}
                   </div>
                 ))}
                 <div
@@ -259,13 +265,13 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
                     justifyContent: 'center',
                     fontSize: 16,
                     fontWeight: 800,
-                    color: row.pending ? '#b6c2bc' : RESULT_THEME.green,
+                    color: tone.valueColor || RESULT_THEME.green,
                     borderTop: '1px solid #d7e0db',
                     borderLeft: '1px solid #d7e0db',
                     backgroundColor: index % 2 === 0 ? '#ffffff' : RESULT_THEME.rowAlt
                   }}
                 >
-                  {row.pending ? '—' : row.total}
+                  {cellValue('total')}
                 </div>
                 <div
                   style={{
@@ -288,15 +294,16 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
                       borderRadius: 6,
                       fontSize: 13,
                       fontWeight: 800,
-                      backgroundColor: row.pending ? '#f1f5f3' : gradeTone(row.grade).fill,
-                      color: row.pending ? '#9aa8a2' : gradeTone(row.grade).text
+                      backgroundColor: tone.pillFill || gradeTone(row.grade).fill,
+                      color: tone.pillColor || gradeTone(row.grade).text
                     }}
                   >
-                    {row.pending ? '—' : row.grade}
+                    {isPending ? tone.value : row.grade}
                   </span>
                 </div>
               </React.Fragment>
-            ))}
+              );
+            })}
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: RESULT_THEME.muted, marginTop: 12 }}>

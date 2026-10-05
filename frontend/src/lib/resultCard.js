@@ -76,6 +76,21 @@ export function gradeTone(grade) {
   return GRADE_TONES[grade] || { fill: '#e2e8e4', text: '#334d44' };
 }
 
+// pending  = no scores entered at all
+// draft    = scores entered but not committed (preview only, never graded)
+// final    = committed by a teacher, the only state that counts
+export function rowTone(row) {
+  if (row.pending) return 'pending';
+  if (row.draft) return 'draft';
+  return 'final';
+}
+
+export const ROW_TONES = {
+  pending: { value: '\u2014', valueColor: '#b6c2bc', pillFill: '#f1f5f3', pillColor: '#9aa8a2' },
+  draft: { valueColor: '#a16207', pillFill: '#fef3c7', pillColor: '#92400e' },
+  final: { valueColor: null, pillFill: null, pillColor: null }
+};
+
 export function gradeFor(total) {
   const score = Number(total) || 0;
   const band = GRADE_BANDS.find((entry) => score >= entry.min);
@@ -231,8 +246,12 @@ export function buildRecord(input = {}) {
   const stats = summarise(rows);
   const stampDate = input.stampDate ? new Date(input.stampDate) : new Date();
   const safeDate = Number.isNaN(stampDate.getTime()) ? new Date() : stampDate;
-  const committedRows = rows.filter((row) => !row.pending);
-  const committedStats = summarise(committedRows.length ? committedRows : rows);
+
+  // A subject counts only once a teacher has committed it. Draft scores are
+  // preview-only, and "nothing published yet" must never read as a score of 0.
+  const scoredRows = rows.filter((row) => row.committed && !row.pending);
+  const draftRows = rows.filter((row) => row.draft && !row.pending);
+  const scoredStats = scoredRows.length ? summarise(scoredRows) : null;
 
   return {
     school: { ...SCHOOL },
@@ -244,14 +263,17 @@ export function buildRecord(input = {}) {
     reportDateLabel: longDate(input.reportDate || safeDate.toISOString().slice(0, 10)),
     academicYear: input.academicYear || '',
     term: input.term || '',
-    honourRoll: typeof input.honourRoll === 'boolean' ? input.honourRoll : committedStats.honoursEligible,
+    honourRoll: scoredStats ? scoredStats.honoursEligible : false,
     classTeacher: input.classTeacher || SCHOOL.headTeacher,
     principal: input.principal || SCHOOL.principal,
     rows: stats.rows,
-    averageText: committedStats.averageText,
-    certificates: committedStats.certificates,
-    honoursEligible: committedStats.honoursEligible,
-    committedSubjects: committedRows.length,
+    hasResults: Boolean(scoredStats),
+    average: scoredStats ? scoredStats.average : 0,
+    averageText: scoredStats ? scoredStats.averageText : '—',
+    certificates: scoredStats ? scoredStats.certificates : 0,
+    honoursEligible: scoredStats ? scoredStats.honoursEligible : false,
+    committedSubjects: scoredRows.length,
+    draftSubjects: draftRows.length,
     totalSubjects: stats.rows.length,
     label: cardFileName({
       studentName: input.studentName,

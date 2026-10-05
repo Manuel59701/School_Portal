@@ -6,6 +6,8 @@ import {
   RESULT_THEME,
   TABLE_COLUMNS,
   gradeTone,
+  rowTone,
+  ROW_TONES,
   buildRecord,
   sessionStamp
 } from './resultCard';
@@ -378,33 +380,40 @@ function drawTable(ctx, record) {
     ctx.stroke();
 
     let x = startX;
+    const rowToneKey = rowTone(row);
+    const tone = ROW_TONES[rowToneKey];
     TABLE_COLUMNS.forEach((col) => {
       if (col.key === 'subject') {
         ctx.textAlign = 'left';
         setFont(ctx, 15.5, 600);
-        ctx.fillStyle = ink;
+        ctx.fillStyle = rowToneKey === 'draft' ? tone.valueColor : ink;
         const size = fitText(ctx, row.subject, col.width - 26, 15.5, 10, 600);
         setFont(ctx, size, 600);
         ctx.fillText(row.subject, x + 14, rowY + rowH / 2);
       } else if (col.key === 'grade') {
-        const tone = gradeTone(row.grade);
+        const gradeFill = rowToneKey === 'final' ? gradeTone(row.grade).fill : tone.pillFill;
+        const gradeText = rowToneKey === 'final' ? gradeTone(row.grade).text : tone.pillColor;
         const pillW = 58;
         const pillH = 23;
         const pillX = x + (col.width - pillW) / 2;
         const pillY = rowY + (rowH - pillH) / 2;
         roundedPath(ctx, pillX, pillY, pillW, pillH, 6);
-        ctx.fillStyle = row.pending ? '#f1f5f3' : tone.fill;
+        ctx.fillStyle = gradeFill;
         ctx.fill();
         setFont(ctx, 13, 800);
-        ctx.fillStyle = row.pending ? '#9aa8a2' : tone.text;
+        ctx.fillStyle = gradeText;
         ctx.textAlign = 'center';
-        ctx.fillText(row.pending ? '—' : row.grade, x + col.width / 2, rowY + rowH / 2 + 0.5);
+        ctx.fillText(rowToneKey === 'pending' ? tone.value : row.grade, x + col.width / 2, rowY + rowH / 2 + 0.5);
       } else {
         ctx.textAlign = 'center';
         const emphasis = col.key === 'total';
         setFont(ctx, emphasis ? 16 : 15, emphasis ? 800 : 600);
-        ctx.fillStyle = row.pending ? '#b6c2bc' : emphasis ? green : ink;
-        ctx.fillText(row.pending ? '—' : String(row[col.key] ?? 0), x + col.width / 2, rowY + rowH / 2 + 0.5);
+        ctx.fillStyle = rowToneKey === 'final' ? (emphasis ? green : ink) : tone.valueColor;
+        ctx.fillText(
+          rowToneKey === 'pending' ? tone.value : String(row[col.key] ?? 0),
+          x + col.width / 2,
+          rowY + rowH / 2 + 0.5
+        );
       }
       x += col.width;
     });

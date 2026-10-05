@@ -169,16 +169,23 @@ export function getCommittedRows(stateSnapshot, session, classKey, studentId, { 
   const committed = classBucket(sessionData.committed, classKey)[studentId] || {};
   const draft = classBucket(sessionData.scores, classKey)[studentId] || {};
 
+  // Three distinct states, never conflated:
+  //   pending  = no scores at all yet
+  //   draft    = scores entered but NOT committed (preview only, never graded)
+  //   committed= published, the only state that counts toward a result
   return SUBJECT_CATALOG.map((subject) => {
+    const isCommitted = Boolean(committed[subject]);
     const source = committed[subject] || (includeDraft ? draft[subject] : null);
+
     if (!source) {
-      return withComputed({ subject, classWork: 0, homeWork: 0, test: 0, exam: 0, pending: true, committed: false });
+      return withComputed({ subject, classWork: 0, homeWork: 0, test: 0, exam: 0, pending: true, committed: false, draft: false });
     }
     return withComputed({
       ...source,
       subject,
       pending: false,
-      committed: Boolean(committed[subject])
+      committed: isCommitted,
+      draft: !isCommitted
     });
   });
 }
