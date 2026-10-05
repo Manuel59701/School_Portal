@@ -1,4 +1,4 @@
-# St. Augustine Academy — School Management Portal
+# School Management Portal
 
 A full-featured, modern School Management System built strictly according to the Project Specification.
 
