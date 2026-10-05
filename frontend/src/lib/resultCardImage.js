@@ -274,16 +274,19 @@ function drawHeader(ctx, record) {
 function drawTitleBand(ctx) {
   const { green, lime } = RESULT_THEME;
   const y = LAYOUT.titleTop;
+  const text = 'TERMLY ACADEMIC PERFORMANCE SUMMARY';
+  const tracking = 3.4;
 
   ctx.save();
   ctx.fillStyle = lime;
   ctx.fillRect(0, y, CARD_W, LAYOUT.titleHeight);
 
-  setFont(ctx, 27, 800);
+  const size = fitText(ctx, text, CARD_W - 40, 27, 16, 800, tracking);
+  setFont(ctx, size, 800);
   ctx.fillStyle = green;
-  ctx.textAlign = 'center';
+  ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  drawTracked(ctx, 'TERMLY ACADEMIC PERFORMANCE SUMMARY', CARD_W / 2, y + LAYOUT.titleHeight / 2 + 1, 3.4, 'center');
+  drawTracked(ctx, text, CARD_W / 2, y + LAYOUT.titleHeight / 2 + 1, tracking, 'center');
 
   ctx.fillStyle = green;
   ctx.fillRect(0, y, 14, LAYOUT.titleHeight);

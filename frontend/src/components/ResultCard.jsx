@@ -47,9 +47,12 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
   const session = sessionStamp(record.academicYear);
 
   return (
-    <div ref={containerRef} style={{ width: '100%' }}>
+    <div ref={containerRef} style={{ width: '100%', height: CARD_H * scale, position: 'relative' }}>
       <div
         style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
           width: CARD_W,
           height: CARD_H,
           transform: `scale(${scale})`,
@@ -61,7 +64,6 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
           flexDirection: 'column',
           boxShadow: '0 18px 40px -12px rgba(0, 48, 36, 0.35)',
           border: '1px solid #d7e0db',
-          position: 'relative',
           overflow: 'hidden'
         }}
       >
@@ -308,7 +310,7 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
           <div
             style={{
               width: 700,
-              height: PANEL_HEIGHT,
+              minHeight: PANEL_HEIGHT,
               border: `2px solid ${RESULT_THEME.green}`,
               borderRadius: 10,
               overflow: 'hidden',
@@ -333,7 +335,7 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
               </span>
             </div>
 
-            <div style={{ padding: '18px 24px 12px' }}>
+            <div style={{ padding: '14px 24px 10px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <span
                   style={{
@@ -370,12 +372,12 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     borderTop: '1px solid #d7e0db',
-                    marginTop: 12,
-                    paddingTop: 10
+                    marginTop: 10,
+                    paddingTop: 9
                   }}
                 >
                   <span style={{ fontSize: 12.5, fontWeight: 700, color: RESULT_THEME.muted }}>{entry.label}</span>
-                  <span style={{ fontSize: 25, fontWeight: 800, color: RESULT_THEME.green }}>{entry.value}</span>
+                  <span style={{ fontSize: 23, fontWeight: 800, color: RESULT_THEME.green }}>{entry.value}</span>
                 </div>
               ))}
             </div>
@@ -383,7 +385,7 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
 
           <div
             style={{
-              height: PANEL_HEIGHT,
+              minHeight: PANEL_HEIGHT,
               border: `2px solid ${RESULT_THEME.green}`,
               borderRadius: 10,
               overflow: 'hidden',
@@ -486,8 +488,6 @@ export default function ResultCard({ record: input, width: forcedWidth }) {
           {record.label}
         </div>
       </div>
-
-      <div style={{ height: CARD_H * scale }} />
     </div>
   );
 }

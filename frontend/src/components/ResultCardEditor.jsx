@@ -319,7 +319,16 @@ export default function ResultCardEditor({
         )}
 
         {showPreview && (
-          <div style={{ backgroundColor: '#eef2f0', borderRadius: 18, padding: 18, border: '1px solid #e2e8e4' }}>
+          <div
+            style={{
+              aspectRatio: '1720 / 1216',
+              boxSizing: 'border-box',
+              padding: '2.79% 3.49%',
+              borderRadius: 18,
+              border: '1px solid #e2e8e4',
+              background: 'linear-gradient(135deg, #e6ece9 0%, #c3cfc9 100%)'
+            }}
+          >
             <ResultCard record={record} />
           </div>
         )}

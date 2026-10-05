@@ -6,7 +6,9 @@ import {
   ShieldAlert,
   Sparkles,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import Crea8orzLogo from './Crea8orzLogo';
 import { buildRoster, classKeyFromStudentId } from '../lib/academics';
@@ -101,6 +103,7 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
   const [role, setRole]                 = useState('student');
   const [identifier, setIdentifier]     = useState('');
   const [password, setPassword]         = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading]           = useState(false);
   const [error, setError]               = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -462,17 +465,36 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
                     <Lock size={18} />
                   </div>
                   <input
-                    type="password" required
+                    type={showPassword ? 'text' : 'password'} required
                     value={password} onChange={e => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     style={{
-                      width: '100%', padding: '12px 14px 12px 42px',
+                      width: '100%', padding: '12px 44px 12px 42px',
                       borderRadius: '10px', border: '1px solid #cbd5d0',
                       fontSize: '0.95rem', outline: 'none', backgroundColor: '#ffffff'
                     }}
                     onFocus={e => (e.target.style.borderColor = '#003024')}
                     onBlur={e  => (e.target.style.borderColor = '#cbd5d0')}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(prev => !prev)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                    style={{
+                      position: 'absolute', right: '6px', top: '50%',
+                      transform: 'translateY(-50%)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      width: '32px', height: '32px', padding: 0,
+                      background: 'transparent', border: 'none', borderRadius: '8px',
+                      color: showPassword ? '#003024' : '#5e7970',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(0, 48, 36, 0.07)')}
+                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
 
                 {role === 'student' && (
