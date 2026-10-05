@@ -187,18 +187,12 @@ export default function ResultCardEditor({
       )}
 
       <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: readOnly ? 'minmax(0, 1fr)' : 'minmax(0, 420px) minmax(0, 1fr)',
-          gap: '28px',
-          alignItems: 'start'
-        }}
-        className="rc-layout"
+        className={readOnly ? 'rc-layout read-only' : 'rc-layout'}
       >
         {!readOnly && (
         <div className="no-print">
-          <div style={{ backgroundColor: '#ffffff', borderRadius: 18, padding: 24, border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ backgroundColor: '#ffffff', borderRadius: 18, padding: 'var(--panel-pad)', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
+            <div className="form-grid">
               <div>
                 <label style={labelStyle}>Class Level</label>
                 <select
@@ -328,7 +322,7 @@ export default function ResultCardEditor({
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '20px' }}>
+            <div className="form-grid" style={{ marginTop: 20 }}>
               <div>
                 <label style={labelStyle}>Date of Progress Report</label>
                 <input type="date" value={reportDate} onChange={(e) => setReportDate(e.target.value)} style={fieldStyle} />
@@ -364,7 +358,7 @@ export default function ResultCardEditor({
             </div>
           </div>
 
-          <div style={{ backgroundColor: '#ffffff', borderRadius: 18, padding: 24, border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)', marginTop: 24 }}>
+          <div style={{ backgroundColor: '#ffffff', borderRadius: 18, padding: 'var(--panel-pad)', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)', marginTop: 24 }}>
             <h4 style={{ fontSize: '1rem', color: '#003024', fontWeight: 800, marginBottom: '14px' }}>Published Subjects</h4>
 
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
@@ -435,12 +429,6 @@ export default function ResultCardEditor({
           </div>
         )}
       </div>
-
-      <style>{`
-        @media (max-width: 1100px) {
-          .rc-layout { grid-template-columns: minmax(0, 1fr) !important; }
-        }
-      `}</style>
     </div>
   );
 }

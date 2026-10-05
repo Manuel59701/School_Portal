@@ -165,14 +165,14 @@ export default function LandingPage({ onNavigateLogin }) {
 
       {/* Navigation Header */}
       <header style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', boxShadow: '0 4px 15px rgba(0, 48, 36, 0.04)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '78px' }}>
+        <div className="container nav-bar" style={{ minHeight: 78 }}>
           {/* Logo */}
-          <div style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div style={{ cursor: 'pointer', minWidth: 0 }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <Crea8orzLogo height={58} />
           </div>
 
-          {/* Navigation links */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+          {/* Navigation links - hidden on phones, reachable via page scroll */}
+          <nav className="hide-md-down" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
             <a href="#about" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>About Us</a>
             <a href="#programs" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Academic Sections</a>
             <a href="#news" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Campus News</a>
@@ -184,7 +184,7 @@ export default function LandingPage({ onNavigateLogin }) {
             <button 
               onClick={onNavigateLogin}
               className="btn btn-lime"
-              style={{ padding: '10px 24px', fontSize: '0.95rem' }}
+              style={{ padding: '10px 24px', fontSize: '0.95rem', whiteSpace: 'nowrap' }}
             >
               <Users size={18} />
               Portal Login
@@ -194,7 +194,7 @@ export default function LandingPage({ onNavigateLogin }) {
       </header>
 
       {/* Hero Slideshow Section */}
-      <section style={{ position: 'relative', height: '640px', overflow: 'hidden', backgroundColor: '#00221a' }}>
+      <section style={{ position: 'relative', minHeight: 'min(640px, 82vh)', overflow: 'hidden', backgroundColor: '#00221a' }}>
         {slides.map((slide, idx) => (
           <div
             key={idx}
@@ -221,7 +221,7 @@ export default function LandingPage({ onNavigateLogin }) {
                   <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#A8F044', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{slide.badge}</span>
                 </div>
 
-                <h1 className="animate-fade-up" style={{ fontSize: '3.4rem', color: '#ffffff', fontWeight: 800, lineHeight: 1.15, marginBottom: '20px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
+                <h1 className="animate-fade-up" style={{ fontSize: 'clamp(2rem, 7.5vw, 3.4rem)', color: '#ffffff', fontWeight: 800, lineHeight: 1.15, marginBottom: '20px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
                   {slide.title}
                 </h1>
 
@@ -280,8 +280,8 @@ export default function LandingPage({ onNavigateLogin }) {
       </section>
 
       {/* Highlights / Stats strip */}
-      <section style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8e4', padding: '36px 0', boxShadow: '0 4px 20px -2px rgba(0, 48, 36, 0.04)' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '30px' }}>
+      <section style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8e4', padding: 'clamp(24px, 4vw, 36px) 0', boxShadow: '0 4px 20px -2px rgba(0, 48, 36, 0.04)' }}>
+        <div className="container grid-cards" style={{ gap: 30 }}>
           <div className="interactive-card reveal reveal-up stagger-1" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid #e2e8e4' }}>
             <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(0, 48, 36, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <Award size={28} />
@@ -325,9 +325,9 @@ export default function LandingPage({ onNavigateLogin }) {
       </section>
 
       {/* About Section */}
-      <section id="about" style={{ padding: '80px 0', backgroundColor: '#f8faf9' }}>
+      <section id="about" className="section-pad" style={{ backgroundColor: '#f8faf9' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '50px', alignItems: 'center' }}>
+          <div className="grid-cards" style={{ gap: 50, alignItems: 'center' }}>
             <div className="reveal reveal-left">
               <span className="badge badge-lime" style={{ marginBottom: '12px' }}>About Crea8orz Academy</span>
               <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#003024' }}>
@@ -359,7 +359,7 @@ export default function LandingPage({ onNavigateLogin }) {
             {/* Visual Mosaic */}
             <div className="reveal reveal-right" style={{ position: 'relative' }}>
               <div style={{ borderRadius: '20px', overflow: 'hidden', boxShadow: 'var(--shadow-xl)', border: '6px solid white' }}>
-                <img src={hero2} alt="Crea8orz Modern Nigerian Classroom" style={{ width: '100%', height: '380px', objectFit: 'cover', display: 'block' }} />
+                <img src={hero2} alt="Crea8orz Modern Nigerian Classroom" style={{ width: '100%', height: 'clamp(200px, 34vw, 380px)', objectFit: 'cover', display: 'block' }} />
               </div>
               <div className="animate-float" style={{ position: 'absolute', bottom: '-24px', left: '-20px', backgroundColor: '#003024', padding: '18px 24px', borderRadius: '16px', boxShadow: 'var(--shadow-lg)', border: '2px solid #A8F044', display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#A8F044', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
@@ -376,7 +376,7 @@ export default function LandingPage({ onNavigateLogin }) {
       </section>
 
       {/* Academic Sections (Nursery, Primary, Secondary) */}
-      <section id="programs" style={{ padding: '80px 0', backgroundColor: '#ffffff' }}>
+      <section id="programs" className="section-pad" style={{ backgroundColor: '#ffffff' }}>
         <div className="container">
           <div className="reveal reveal-up" style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 60px auto' }}>
             <span className="badge badge-primary" style={{ marginBottom: '12px' }}>Scope: Nursery to Secondary</span>
@@ -386,7 +386,7 @@ export default function LandingPage({ onNavigateLogin }) {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
+          <div className="grid-cards-sm" style={{ gap: 32 }}>
             
             {/* Early Childhood / Nursery */}
             <div className="interactive-card reveal reveal-up stagger-1" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
@@ -453,7 +453,7 @@ export default function LandingPage({ onNavigateLogin }) {
       </section>
 
       {/* News & Announcements Section */}
-      <section id="news" style={{ padding: '80px 0', backgroundColor: '#f8faf9' }}>
+      <section id="news" className="section-pad" style={{ backgroundColor: '#f8faf9' }}>
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
             <div className="reveal reveal-left">
@@ -465,7 +465,7 @@ export default function LandingPage({ onNavigateLogin }) {
             </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px' }}>
+          <div className="grid-cards-sm" style={{ gap: 28 }}>
             {INITIAL_ANNOUNCEMENTS.map((item, idx) => (
               <div key={item.id} className={`interactive-card reveal reveal-up stagger-${idx + 1}`} style={{ backgroundColor: 'white', borderRadius: '16px', padding: '28px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -483,7 +483,7 @@ export default function LandingPage({ onNavigateLogin }) {
       </section>
 
       {/* Newsletter Signup */}
-      <section id="newsletter" style={{ padding: '80px 0', backgroundColor: '#003024', color: 'white', position: 'relative' }}>
+      <section id="newsletter" className="section-pad" style={{ backgroundColor: '#003024', color: 'white', position: 'relative' }}>
         <div className="container">
           <div className="reveal reveal-scale" style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
             <span style={{ backgroundColor: 'rgba(168, 240, 68, 0.2)', color: '#A8F044', padding: '6px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', border: '1px solid #A8F044' }}>
@@ -535,9 +535,9 @@ export default function LandingPage({ onNavigateLogin }) {
       </section>
 
       {/* Footer */}
-      <footer style={{ backgroundColor: '#00221a', color: '#94a3b8', padding: '60px 0 30px 0', borderTop: '1px solid rgba(168, 240, 68, 0.15)' }}>
+      <footer style={{ backgroundColor: '#00221a', color: '#94a3b8', padding: 'clamp(40px, 7vw, 60px) 0 30px 0', borderTop: '1px solid rgba(168, 240, 68, 0.15)' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '40px', marginBottom: '50px' }}>
+          <div className="grid-cards-sm" style={{ gap: 40, marginBottom: 50 }}>
             <div>
               <div style={{ marginBottom: '16px' }}>
                 <Crea8orzLogo height={44} variant="on-dark" />

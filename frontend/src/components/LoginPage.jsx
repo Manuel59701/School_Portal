@@ -91,9 +91,13 @@ const LOGIN_CSS = `
 }
 .lgn-slide-panel { display: block !important; }
 .lgn-mob-header  { display: none !important; }
+/* Desktop keeps the clipping the slideshow needs; on phones the form must
+   be free to scroll, otherwise a tall form is cut off with no way to reach it. */
+.lgn-shell { overflow: hidden; }
 @media (max-width: 860px) {
   .lgn-slide-panel { display: none !important; }
   .lgn-mob-header  { display: flex !important; }
+  .lgn-shell       { overflow: visible; }
 }
 .lgn-arrow:hover { background-color: rgba(168,240,68,0.2) !important; border-color: #A8F044 !important; }
 .lgn-demo:hover  { border-color: #003024 !important; }
@@ -238,7 +242,7 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
   const slide = SLIDES[currentSlide];
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', overflow: 'hidden' }}>
+    <div className="lgn-shell" style={{ minHeight: '100dvh', display: 'flex' }}>
 
       {/* ── LEFT: Cinematic Slideshow ─────────────────────────── */}
       <div
@@ -328,7 +332,7 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
         <button onClick={prev} aria-label="Previous slide" className="lgn-arrow"
           style={{
             position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)',
-            width: '42px', height: '42px', borderRadius: '50%', zIndex: 30, cursor: 'pointer',
+            width: '44px', height: '44px', borderRadius: '50%', zIndex: 30, cursor: 'pointer', flexShrink: 0,
             backgroundColor: 'rgba(0,0,0,0.32)', backdropFilter: 'blur(6px)',
             border: '1px solid rgba(255,255,255,0.18)', color: 'white',
             display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
@@ -339,7 +343,7 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
         <button onClick={next} aria-label="Next slide" className="lgn-arrow"
           style={{
             position: 'absolute', right: '18px', top: '50%', transform: 'translateY(-50%)',
-            width: '42px', height: '42px', borderRadius: '50%', zIndex: 30, cursor: 'pointer',
+            width: '44px', height: '44px', borderRadius: '50%', zIndex: 30, cursor: 'pointer', flexShrink: 0,
             backgroundColor: 'rgba(0,0,0,0.32)', backdropFilter: 'blur(6px)',
             border: '1px solid rgba(255,255,255,0.18)', color: 'white',
             display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
@@ -378,7 +382,7 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
         </header>
 
         {/* Centred form */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 32px' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(24px, 5vw, 48px) clamp(16px, 4vw, 32px)' }}>
           <div style={{ width: '100%', maxWidth: '440px' }}>
 
             {/* Heading */}

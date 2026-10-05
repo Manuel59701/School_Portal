@@ -260,11 +260,11 @@ export default function TeacherDashboard({ user, onLogout }) {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
       <nav style={{ backgroundColor: 'white', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '72px' }}>
+        <div className="container nav-bar" style={{ minHeight: 68 }}>
           <Crea8orzLogo height={36} />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div style={{ textAlign: 'right' }}>
+          <div className="nav-actions" style={{ gap: 20 }}>
+            <div className="hide-xs-down" style={{ textAlign: 'right' }}>
               <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#003024' }}>{user?.name || 'Dr. Sarah Adebayo'}</div>
               <div style={{ fontSize: '0.8rem', color: '#5e7970' }}>Class Master • {subject}</div>
             </div>
@@ -287,7 +287,7 @@ export default function TeacherDashboard({ user, onLogout }) {
         </div>
       </nav>
 
-      <main style={{ flex: 1, padding: '36px 0' }}>
+      <main style={{ flex: 1, padding: 'clamp(20px, 4vw, 36px) 0' }}>
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
             <div>
@@ -320,7 +320,7 @@ export default function TeacherDashboard({ user, onLogout }) {
           {activePanel === 'gradebook' && (
             <>
               <div style={{ backgroundColor: 'white', borderRadius: 16, padding: 24, border: '1px solid #e2e8e4', marginBottom: 28, boxShadow: 'var(--shadow-sm)' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '18px' }}>
+                <div className="grid-stats" style={{ gap: 18 }}>
                   <div>
                     <label style={labelStyle}>Class Level</label>
                     <select value={level} onChange={(e) => setLevel(e.target.value)} style={fieldStyle}>
@@ -440,7 +440,7 @@ export default function TeacherDashboard({ user, onLogout }) {
                   </span>
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
+                <div className="table-scroll">
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem' }}>
                     <thead>
                       <tr style={{ backgroundColor: '#003024', color: 'white' }}>
@@ -524,7 +524,7 @@ export default function TeacherDashboard({ user, onLogout }) {
                       Showing {(currentPage - 1) * PAGE_SIZE + 1}&ndash;{Math.min(currentPage * PAGE_SIZE, sortedRows.length)} of {sortedRows.length} students
                     </span>
 
-                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div className="page-numbers">
                       <button
                         type="button"
                         onClick={() => setPage((prev) => Math.max(1, prev - 1))}
@@ -596,15 +596,12 @@ export default function TeacherDashboard({ user, onLogout }) {
           aria-modal="true"
           aria-live="assertive"
           onClick={closeNotice}
+          className="modal-overlay"
           style={{
             position: 'fixed',
             inset: 0,
             zIndex: 100,
-            backgroundColor: 'rgba(3, 32, 24, 0.55)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '24px'
+            backgroundColor: 'rgba(3, 32, 24, 0.55)'
           }}
         >
           <div
@@ -617,7 +614,9 @@ export default function TeacherDashboard({ user, onLogout }) {
               borderRadius: 16,
               border: `2px solid ${notice.type === 'success' ? '#A8F044' : '#fecaca'}`,
               boxShadow: '0 24px 60px -12px rgba(0, 48, 36, 0.45)',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              maxHeight: 'calc(100dvh - 48px)',
+              overflowY: 'auto'
             }}
           >
             <div

@@ -26,11 +26,11 @@ export default function StudentDashboard({ user, onLogout }) {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
       <nav className="no-print" style={{ backgroundColor: 'white', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '72px' }}>
+        <div className="container nav-bar" style={{ minHeight: 68 }}>
           <Crea8orzLogo height={36} />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div style={{ textAlign: 'right' }}>
+          <div className="nav-actions" style={{ gap: 20 }}>
+            <div className="hide-xs-down" style={{ textAlign: 'right' }}>
               <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#003024' }}>{student.name}</div>
               <div style={{ fontSize: '0.8rem', color: '#5e7970' }}>{student.studentId} • {classKey}</div>
             </div>
@@ -45,7 +45,7 @@ export default function StudentDashboard({ user, onLogout }) {
         </div>
       </nav>
 
-      <main style={{ flex: 1, padding: '36px 0' }}>
+      <main style={{ flex: 1, padding: 'clamp(20px, 4vw, 36px) 0' }}>
         <div className="container">
           <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
             <div>
@@ -78,7 +78,7 @@ export default function StudentDashboard({ user, onLogout }) {
             </div>
           </div>
 
-          <div className="no-print" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '28px' }}>
+          <div className="no-print grid-stats" style={{ marginBottom: 28 }}>
             <div style={{ backgroundColor: 'white', borderRadius: 16, padding: 22, border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: '0.82rem', color: '#5e7970', fontWeight: 700, marginBottom: '6px' }}>SUBJECTS RELEASED</div>
               <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#003024' }}>
@@ -89,7 +89,7 @@ export default function StudentDashboard({ user, onLogout }) {
 
             <div style={{ backgroundColor: 'white', borderRadius: 16, padding: 22, border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)', gridColumn: 'span 2' }}>
               <div style={{ fontSize: '0.82rem', color: '#5e7970', fontWeight: 700, marginBottom: '10px' }}>RELEASED SUBJECTS</div>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div className="tab-strip">
                 {committedSubjects.length === 0 && (
                   <span style={{ fontSize: '0.87rem', color: '#b45309' }}>
                     No results released yet for {classKey}. Your teachers are still entering scores.

@@ -255,7 +255,7 @@ button {
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--gutter);
 }
 
 /* Glassmorphism Classes */
@@ -366,6 +366,266 @@ button {
 .badge-emerald { background: #d1fae5; color: #065f46; }
 .badge-gold { background: #fef3c7; color: #92400e; }
 .badge-rose { background: #ffe4e6; color: #9f1239; }
+
+/* ==========================================================
+   RESPONSIVE LAYER
+   Phone -> tablet -> iPad -> laptop -> desktop.
+   Tokens are fluid; layout classes replace rigid inline
+   grid/padding styles that cannot be overridden by media queries.
+   ========================================================== */
+
+:root {
+  --gutter: 24px;       /* horizontal page gutter */
+  --page-pad: 32px;     /* main content block padding */
+  --panel-pad: 24px;    /* inner panel padding */
+  --row-gap: 18px;
+  --tap-min: 44px;      /* minimum touch target */
+}
+
+@media (max-width: 1200px) {
+  :root { --gutter: 20px; --page-pad: 24px; --panel-pad: 20px; --row-gap: 16px; }
+}
+@media (max-width: 860px) {
+  :root { --gutter: 16px; --page-pad: 16px; --panel-pad: 16px; --row-gap: 14px; }
+}
+@media (max-width: 480px) {
+  :root { --gutter: 12px; --page-pad: 12px; --panel-pad: 14px; --row-gap: 12px; }
+}
+
+/* Stop iOS from inflating text in landscape and from zooming on input focus */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ---- Fluid auto-fit grids ---------------------------------
+   `minmax(min(Xpx, 100%), 1fr)` is the key fix: without the
+   `min()` wrapper a 320px minimum overflows a 312px viewport. */
+.grid-cards {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+}
+.grid-cards-sm {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+}
+.grid-stats {
+  display: grid;
+  gap: var(--row-gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+}
+@media (max-width: 480px) {
+  .grid-stats { grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr)); }
+}
+
+/* Two-column form rows that collapse to one column */
+.form-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---- Page + panel surfaces ---- */
+.page {
+  padding: var(--page-pad);
+}
+.panel {
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--panel-pad);
+}
+
+/* ---- Horizontally scrollable data tables ----
+   Tables keep a readable min width and scroll inside their
+   container instead of stretching or squashing the page. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll > table {
+  width: 100%;
+  border-collapse: collapse;
+}
+@media (max-width: 860px) {
+  .table-scroll > table { min-width: 680px; }
+}
+.table-scroll > table th,
+.table-scroll > table td {
+  white-space: nowrap;
+}
+/* Long text cells (names) may wrap instead of forcing the scroll */
+.table-scroll > table td.wrap { white-space: normal; min-width: 160px; }
+
+/* ---- Top navigation bar ---- */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px var(--gutter);
+  min-height: 68px;
+  flex-wrap: wrap;
+}
+.nav-bar .nav-title { min-width: 0; }
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .nav-bar { min-height: 0; gap: 12px; }
+  .nav-actions { width: 100%; }
+  .nav-actions > * { flex: 1 1 auto; }
+}
+
+/* ---- Tab strip: scrolls sideways on small screens ---- */
+.tab-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+@media (max-width: 860px) {
+  .tab-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    /* bleed to the screen edges so it reads as scrollable */
+    margin: 0 calc(var(--gutter) * -1);
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+  .tab-strip::-webkit-scrollbar { display: none; }
+  .tab-strip > * { flex: 0 0 auto; }
+}
+
+/* ---- Button rows ---- */
+.btn-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .btn-row.stack-sm { flex-direction: column; align-items: stretch; }
+  .btn-row.stack-sm > * { width: 100%; }
+}
+
+/* ---- Modal ---- */
+.modal-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+.modal-card {
+  width: 100%;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--panel-pad);
+}
+@media (max-width: 640px) {
+  .modal-overlay { align-items: flex-start; padding: 12px; }
+  .modal-card { border-radius: var(--radius-md); }
+  /* vh fallback first, then dvh so browsers with dvh use it */
+  .modal-card { max-height: calc(100vh - 24px); }
+  .modal-card { max-height: calc(100dvh - 24px); }
+}
+
+/* ---- Utility: hide / show at breakpoints ---- */
+@media (max-width: 860px) { .hide-md-down { display: none !important; } }
+@media (max-width: 640px) { .hide-sm-down { display: none !important; } }
+@media (max-width: 480px) { .hide-xs-down { display: none !important; } }
+@media (min-width: 861px) { .show-md-up { display: revert !important; } }
+@media (min-width: 641px) { .show-sm-up { display: revert !important; } }
+
+/* Prevent flex/grid children from forcing horizontal page scroll.
+   `min-width: 0` is required because children default to `min-width: auto`. */
+.row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.row > * { min-width: 0; }
+.col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.col > * { min-width: 0; }
+
+/* ---- Vertical rhythm for full-width sections ---- */
+.section-pad { padding: 80px 0; }
+@media (max-width: 860px) { .section-pad { padding: 56px 0; } }
+@media (max-width: 480px) { .section-pad { padding: 44px 0; } }
+
+/* Long unbroken strings (IDs, emails) must not blow out a column */
+.wrap-anywhere { overflow-wrap: anywhere; word-break: break-word; }
+
+/* ---- Report card editor ----
+   Sidebar + preview side by side on desktop, stacked below.
+   Replaces a scoped <style> block that needed !important. */
+.rc-layout {
+  display: grid;
+  gap: 28px;
+  align-items: start;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+}
+.rc-layout.read-only { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 1100px) {
+  .rc-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
+
+/* ---- Pagination number row ---- */
+.page-numbers {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+@media (max-width: 480px) {
+  .page-numbers {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .page-numbers::-webkit-scrollbar { display: none; }
+  .page-numbers > button {
+    min-width: 40px;
+    min-height: 40px;
+    flex: 0 0 auto;
+  }
+}
+
+/* ---- Touch targets on coarse pointers ---- */
+@media (pointer: coarse) {
+  .btn,
+  .tab-strip button,
+  .page-numbers > button,
+  .badge,
+  button.btn-sm {
+    min-height: var(--tap-min);
+  }
+  .page-numbers > button { min-width: var(--tap-min); }
+  /* Inline-styled icon buttons still need breathing room */
+  button { touch-action: manipulation; }
+}
+
+/* ---- 16px inputs on touch devices stops iOS auto-zoom on focus ---- */
+@media (max-width: 860px), (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+    max-width: 100%;
+  }
+}
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {

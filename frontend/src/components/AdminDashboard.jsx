@@ -61,7 +61,7 @@ function PaginationBar({ current, totalPages, total, noun, onChange }) {
         Showing {(current - 1) * CLASS_PAGE_SIZE + 1}&ndash;{Math.min(current * CLASS_PAGE_SIZE, total)} of {total} {noun}
       </span>
 
-      <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="page-numbers">
         <button
           type="button"
           onClick={() => onChange(Math.max(1, current - 1))}
@@ -305,11 +305,11 @@ export default function AdminDashboard({ user, onLogout }) {
       
       {/* Top Header with Crea8orz Deep Green & Lime */}
       <nav style={{ backgroundColor: '#00221a', color: 'white', position: 'sticky', top: 0, zIndex: 50, borderBottom: '2px solid rgba(168, 240, 68, 0.2)' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '72px' }}>
-          <Crea8orzLogo height={36} variant="light" />
+          <div className="container nav-bar" style={{ minHeight: 68 }}>
+            <Crea8orzLogo height={36} variant="light" />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div style={{ textAlign: 'right' }}>
+            <div className="nav-actions" style={{ gap: 20 }}>
+              <div className="hide-xs-down" style={{ textAlign: 'right' }}>
               <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#ffffff' }}>System Administrator</div>
               <div style={{ fontSize: '0.8rem', color: '#A8F044' }}>Executive Console Authority</div>
             </div>
@@ -333,11 +333,11 @@ export default function AdminDashboard({ user, onLogout }) {
       </nav>
 
       {/* Main Container */}
-      <main style={{ flex: 1, padding: '36px 0' }}>
+      <main style={{ flex: 1, padding: 'clamp(20px, 4vw, 36px) 0' }}>
         <div className="container">
           
           {/* Admin Stats Strip */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+              <div className="grid-stats" style={{ marginBottom: 32 }}>
             <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <span style={{ fontSize: '0.85rem', color: '#5e7970', fontWeight: 700 }}>TOTAL CLASS ARMS</span>
@@ -376,7 +376,7 @@ export default function AdminDashboard({ user, onLogout }) {
           </div>
 
           {/* Navigation Tabs */}
-          <div style={{ display: 'flex', gap: '12px', borderBottom: '2px solid #e2e8e4', marginBottom: '28px', paddingBottom: '4px' }}>
+          <div className="tab-strip" style={{ gap: 12, borderBottom: '2px solid #e2e8e4', marginBottom: 28, paddingBottom: 4 }}>
             {[
               { id: 'classes', label: 'Manage Classes & Arms', icon: School },
               { id: 'teachers', label: 'Teacher Staff Accounts', icon: Users },
@@ -411,7 +411,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
           {/* TAB 1: CLASSES MANAGEMENT */}
           {activeTab === 'classes' && (
-            <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: 'var(--panel-pad)', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <div>
                   <h3 style={{ fontSize: '1.3rem', color: '#003024', fontWeight: 800 }}>Class Structure & Academic Divisions</h3>
@@ -422,7 +422,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 </button>
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
+              <div className="table-scroll">
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem' }}>
                   <thead>
                     <tr style={{ backgroundColor: '#003024', color: 'white' }}>
@@ -465,7 +465,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
           {/* TAB 2: TEACHERS MANAGEMENT */}
           {activeTab === 'teachers' && (
-            <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: 'var(--panel-pad)', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <div>
                   <h3 style={{ fontSize: '1.3rem', color: '#003024', fontWeight: 800 }}>Teacher Staff Accounts</h3>
@@ -476,7 +476,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 </button>
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
+              <div className="table-scroll">
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem' }}>
                   <thead>
                     <tr style={{ backgroundColor: '#003024', color: 'white' }}>
@@ -509,7 +509,7 @@ export default function AdminDashboard({ user, onLogout }) {
                           <span className="badge badge-lime">Verified Active</span>
                         </td>
                         <td style={{ padding: '14px 16px' }}>
-                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          <div className="tab-strip">
                             <button type="button" onClick={() => openEditTeacher(tch)} className="btn btn-outline" style={{ padding: '7px 12px', fontSize: '0.78rem' }}>
                               <Pencil size={14} /> Edit
                             </button>
@@ -541,7 +541,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
           {/* TAB 3: OVERSEE RESULTS */}
           {activeTab === 'results' && (
-            <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: 'var(--panel-pad)', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
                 <div>
                   <h3 style={{ fontSize: '1.3rem', color: '#003024', fontWeight: 800 }}>Crea8orz Result Registry Overview</h3>
@@ -615,7 +615,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 </button>
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
+              <div className="table-scroll">
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem' }}>
                   <thead>
                     <tr style={{ backgroundColor: '#003024', color: 'white' }}>
@@ -670,7 +670,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
           {/* TAB 4: NEWSLETTER SUBSCRIBERS */}
           {activeTab === 'newsletter' && (
-            <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: 'var(--panel-pad)', border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <div>
                   <h3 style={{ fontSize: '1.3rem', color: '#003024', fontWeight: 800 }}>Captured Newsletter Leads</h3>
@@ -684,7 +684,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 </button>
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
+              <div className="table-scroll">
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.92rem' }}>
                   <thead>
                     <tr style={{ backgroundColor: '#003024', color: 'white' }}>
@@ -712,8 +712,8 @@ export default function AdminDashboard({ user, onLogout }) {
 
       {/* Modal: Create Class */}
       {newClassModal && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #003024' }}>
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', zIndex: 100 }}>
+          <div className="modal-card" style={{ backgroundColor: 'white', borderRadius: '18px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #003024' }}>
             <h3 style={{ fontSize: '1.4rem', color: '#003024', fontWeight: 800, marginBottom: '8px' }}>Create New Class Arm</h3>
             <p style={{ color: '#5e7970', fontSize: '0.9rem', marginBottom: '20px' }}>Register an academic class arm for Crea8orz Academy</p>
 
@@ -759,7 +759,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
+              <div className="btn-row stack-sm" style={{ justifyContent: 'flex-end', marginTop: '12px' }}>
                 <button type="button" onClick={() => { setNewClassModal(false); setClassError(''); }} className="btn btn-outline">Cancel</button>
                 <button type="submit" className="btn btn-lime">Create Class</button>
               </div>
@@ -770,8 +770,8 @@ export default function AdminDashboard({ user, onLogout }) {
 
       {/* Modal: Register Teacher */}
       {newTeacherModal && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #003024' }}>
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', zIndex: 100 }}>
+          <div className="modal-card" style={{ backgroundColor: 'white', borderRadius: '18px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #003024' }}>
             <h3 style={{ fontSize: '1.4rem', color: '#003024', fontWeight: 800, marginBottom: '8px' }}>Register Teacher Account</h3>
             <p style={{ color: '#5e7970', fontSize: '0.9rem', marginBottom: '20px' }}>Create an authorized staff account for result submission</p>
 
@@ -822,7 +822,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 </select>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
+              <div className="btn-row stack-sm" style={{ justifyContent: 'flex-end', marginTop: '12px' }}>
                 <button type="button" onClick={() => setNewTeacherModal(false)} className="btn btn-outline">Cancel</button>
                 <button type="submit" className="btn btn-lime">Register Account</button>
               </div>
@@ -833,8 +833,8 @@ export default function AdminDashboard({ user, onLogout }) {
 
       {/* Modal: Edit Teacher */}
       {editingTeacher && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #003024', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', zIndex: 100 }}>
+          <div className="modal-card" style={{ backgroundColor: 'white', borderRadius: '18px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #003024' }}>
             <h3 style={{ fontSize: '1.4rem', color: '#003024', fontWeight: 800, marginBottom: '8px' }}>Edit Staff Account</h3>
             <p style={{ color: '#5e7970', fontSize: '0.9rem', marginBottom: '20px' }}>
               Update {editingTeacher.name}&rsquo;s details or reset their portal password
@@ -942,7 +942,7 @@ export default function AdminDashboard({ user, onLogout }) {
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
+              <div className="btn-row stack-sm" style={{ justifyContent: 'flex-end', marginTop: '12px' }}>
                 <button type="button" onClick={() => setEditingTeacher(null)} className="btn btn-outline">Cancel</button>
                 <button type="submit" className="btn btn-lime">Save Changes</button>
               </div>
@@ -953,12 +953,13 @@ export default function AdminDashboard({ user, onLogout }) {
 
       {/* Modal: Confirm Delete Teacher */}
       {deleteTarget && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 34, 26, 0.6)', backdropFilter: 'blur(4px)', zIndex: 100 }}>
           <div
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="delete-teacher-heading"
-            style={{ backgroundColor: 'white', borderRadius: '18px', padding: '32px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #b91c1c' }}
+            className="modal-card"
+            style={{ backgroundColor: 'white', borderRadius: '18px', width: '100%', maxWidth: '480px', boxShadow: 'var(--shadow-xl)', border: '2px solid #b91c1c' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
               <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '42px', height: '42px', borderRadius: '12px', backgroundColor: '#fef2f2', color: '#b91c1c', flexShrink: 0 }}>
@@ -985,7 +986,7 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
+            <div className="btn-row stack-sm" style={{ justifyContent: 'flex-end', marginTop: '24px' }}>
               <button type="button" onClick={cancelDeleteTeacher} className="btn btn-outline">
                 Cancel
               </button>
