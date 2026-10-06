@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   ChevronRight, 
-  ChevronLeft, 
   BookOpen, 
   ShieldCheck, 
   Award, 
@@ -158,14 +157,6 @@ export default function LandingPage({ onNavigateLogin }) {
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  const handlePrevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
-
-  const handleNextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!newsletterEmail) return;
@@ -311,23 +302,6 @@ export default function LandingPage({ onNavigateLogin }) {
           </div>
         ))}
 
-        {/* Carousel Arrows */}
-        <button 
-          onClick={handlePrevSlide}
-          aria-label="Previous slide"
-          style={{ position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(0, 48, 36, 0.6)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A8F044', zIndex: 20, transition: 'all 0.2s', border: '1px solid #A8F044' }}
-        >
-          <ChevronLeft size={24} />
-        </button>
-
-        <button 
-          onClick={handleNextSlide}
-          aria-label="Next slide"
-          style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(0, 48, 36, 0.6)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#A8F044', zIndex: 20, transition: 'all 0.2s', border: '1px solid #A8F044' }}
-        >
-          <ChevronRight size={24} />
-        </button>
-
         {/* Carousel Indicators */}
         <div style={{ position: 'absolute', bottom: '28px', left: '0', right: '0', display: 'flex', justifyContent: 'center', gap: '10px', zIndex: 20 }}>
           {slides.map((_, i) => (
@@ -461,9 +435,6 @@ export default function LandingPage({ onNavigateLogin }) {
             <div className="interactive-card reveal reveal-up stagger-1" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
               <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
                 <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero2})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#003024', color: '#A8F044', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
-                  Ages 2 – 5
-                </div>
               </div>
               <div style={{ padding: '28px' }}>
                 <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Early Years Foundation (Nursery)</h3>
@@ -481,9 +452,6 @@ export default function LandingPage({ onNavigateLogin }) {
             <div className="interactive-card reveal reveal-up stagger-2" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
               <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
                 <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#A8F044', color: '#003024', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
-                  Ages 6 – 11
-                </div>
               </div>
               <div style={{ padding: '28px' }}>
                 <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Primary Education (Grades 1 – 6)</h3>
@@ -501,9 +469,6 @@ export default function LandingPage({ onNavigateLogin }) {
             <div className="interactive-card reveal reveal-up stagger-3" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
               <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
                 <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                <div style={{ position: 'absolute', top: '16px', right: '16px', backgroundColor: '#003024', color: '#A8F044', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800 }}>
-                  Ages 12 – 18
-                </div>
               </div>
               <div style={{ padding: '28px' }}>
                 <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Junior & Senior Secondary (JSS & SSS)</h3>

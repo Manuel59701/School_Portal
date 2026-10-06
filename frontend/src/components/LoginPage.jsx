@@ -5,8 +5,6 @@ import {
   User,
   ShieldAlert,
   Sparkles,
-  ChevronLeft,
-  ChevronRight,
   Eye,
   EyeOff
 } from 'lucide-react';
@@ -99,7 +97,6 @@ const LOGIN_CSS = `
   .lgn-mob-header  { display: flex !important; }
   .lgn-shell       { overflow: visible; }
 }
-.lgn-arrow:hover { background-color: rgba(168,240,68,0.2) !important; border-color: #A8F044 !important; }
 .lgn-demo:hover  { border-color: #003024 !important; }
 `;
 
@@ -133,8 +130,6 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
   }, []);
 
   const goTo = (idx) => { setCurrentSlide(idx); setAnimKey(k => k + 1); };
-  const prev = () => goTo((currentSlide - 1 + SLIDES.length) % SLIDES.length);
-  const next = () => goTo((currentSlide + 1) % SLIDES.length);
 
   const handleQuickDemo = (selectedRole) => {
     setRole(selectedRole);
@@ -327,30 +322,6 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
             ))}
           </div>
         </div>
-
-        {/* Arrow controls */}
-        <button onClick={prev} aria-label="Previous slide" className="lgn-arrow"
-          style={{
-            position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)',
-            width: '44px', height: '44px', borderRadius: '50%', zIndex: 30, cursor: 'pointer', flexShrink: 0,
-            backgroundColor: 'rgba(0,0,0,0.32)', backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(255,255,255,0.18)', color: 'white',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
-          }}
-        >
-          <ChevronLeft size={22} />
-        </button>
-        <button onClick={next} aria-label="Next slide" className="lgn-arrow"
-          style={{
-            position: 'absolute', right: '18px', top: '50%', transform: 'translateY(-50%)',
-            width: '44px', height: '44px', borderRadius: '50%', zIndex: 30, cursor: 'pointer', flexShrink: 0,
-            backgroundColor: 'rgba(0,0,0,0.32)', backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(255,255,255,0.18)', color: 'white',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
-          }}
-        >
-          <ChevronRight size={22} />
-        </button>
 
         {/* Counter */}
         <div style={{
