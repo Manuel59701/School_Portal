@@ -22,7 +22,6 @@ import {
   CLASS_LEVELS,
   CLASS_ARMS,
   TERMS,
-  ACADEMIC_YEARS,
   SUBJECT_CATALOG,
   buildRoster,
   classKey as makeClassKey
@@ -403,12 +402,19 @@ export default function TeacherDashboard({ user, onLogout }) {
                   </div>
 
                   <div>
-                    <label style={labelStyle}>Academic Year</label>
-                    <select value={academicYear} onChange={(e) => setAcademicYear(e.target.value)} style={fieldStyle}>
-                      {ACADEMIC_YEARS.map((option) => (
-                        <option key={option} value={option}>{option}</option>
-                      ))}
-                    </select>
+                    <label style={labelStyle} htmlFor="academic-year">Academic Year</label>
+                    <input
+                      id="academic-year"
+                      type="text"
+                      value={academicYear}
+                      onChange={(e) => setAcademicYear(e.target.value)}
+                      onBlur={() => { if (!academicYear.trim()) setAcademicYear('2025/2026'); }}
+                      placeholder="2025/2026"
+                      aria-label="Academic Year, format 2025/2026"
+                      maxLength={9}
+                      autoComplete="off"
+                      style={{ ...fieldStyle, fontFamily: 'inherit' }}
+                    />
                   </div>
                 </div>
 
