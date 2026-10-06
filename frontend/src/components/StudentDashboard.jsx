@@ -26,8 +26,8 @@ export default function StudentDashboard({ user, onLogout }) {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
       <nav className="no-print" style={{ backgroundColor: 'white', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container nav-bar" style={{ minHeight: 68 }}>
-          <Crea8orzLogo height={36} />
+        <div className="container nav-bar center-logo" style={{ minHeight: 68 }}>
+          <div className="nav-logo"><Crea8orzLogo height={36} /></div>
 
           <div className="nav-actions" style={{ gap: 20 }}>
             <div className="hide-xs-down" style={{ textAlign: 'right' }}>
@@ -78,7 +78,7 @@ export default function StudentDashboard({ user, onLogout }) {
             </div>
           </div>
 
-          <div className="no-print grid-stats" style={{ marginBottom: 28 }}>
+          <div className="no-print grid-stats stack-sm" style={{ marginBottom: 28 }}>
             <div style={{ backgroundColor: 'white', borderRadius: 16, padding: 22, border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: '0.82rem', color: '#5e7970', fontWeight: 700, marginBottom: '6px' }}>SUBJECTS RELEASED</div>
               <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#003024' }}>
@@ -87,7 +87,7 @@ export default function StudentDashboard({ user, onLogout }) {
               <div style={{ fontSize: '0.8rem', color: '#5e7970', marginTop: '4px' }}>Published by your subject teachers</div>
             </div>
 
-            <div style={{ backgroundColor: 'white', borderRadius: 16, padding: 22, border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)', gridColumn: 'span 2' }}>
+            <div className="span-2" style={{ backgroundColor: 'white', borderRadius: 16, padding: 22, border: '1px solid #e2e8e4', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: '0.82rem', color: '#5e7970', fontWeight: 700, marginBottom: '10px' }}>RELEASED SUBJECTS</div>
               <div className="tab-strip">
                 {committedSubjects.length === 0 && (

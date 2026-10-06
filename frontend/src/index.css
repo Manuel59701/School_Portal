@@ -419,6 +419,7 @@ html {
 @media (max-width: 480px) {
   .grid-stats { grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr)); }
 }
+.span-2 { grid-column: span 2; }
 
 /* Two-column form rows that collapse to one column */
 .form-grid {
@@ -484,6 +485,92 @@ html {
   .nav-bar { min-height: 0; gap: 12px; }
   .nav-actions { width: 100%; }
   .nav-actions > * { flex: 1 1 auto; }
+}
+
+/* Logo sits in the horizontal centre of the bar on logged-in screens.
+   Desktop: absolutely centred so the action cluster stays right-aligned.
+   Phone: the actions wrap to their own full-width row, so the logo
+   centres itself with auto margins on the first row. */
+.nav-bar.center-logo { position: relative; }
+.nav-bar.center-logo > .nav-logo { display: inline-flex; align-items: center; }
+@media (min-width: 861px) {
+  .nav-bar.center-logo > .nav-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+}
+@media (max-width: 860px) {
+  .nav-bar.center-logo { min-height: 0; }
+  .nav-bar.center-logo > .nav-logo { margin: 0 auto; }
+  .nav-bar.center-logo > .nav-actions { width: 100%; justify-content: flex-end; }
+}
+
+/* ---- Mobile menu toggle + dropdown (landing page) ---- */
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 48, 36, 0.18);
+  background: #ffffff;
+  color: #003024;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.menu-toggle:active { background-color: rgba(168, 240, 68, 0.25); }
+@media (max-width: 860px) {
+  .menu-toggle { display: inline-flex; }
+}
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px var(--gutter) 18px;
+  background: rgba(255, 255, 255, 0.99);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid rgba(0, 48, 36, 0.08);
+  box-shadow: 0 14px 30px rgba(0, 48, 36, 0.14);
+  z-index: 120;
+}
+.mobile-menu a,
+.mobile-menu .mobile-menu-login {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: var(--tap-min);
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: #003024;
+  font-weight: 700;
+  font-size: 0.98rem;
+  text-decoration: none;
+  background: #f4f7f5;
+  border: 1px solid #e2e8e4;
+}
+.mobile-menu a:active { background: rgba(168, 240, 68, 0.25); }
+.mobile-menu .mobile-menu-login {
+  justify-content: center;
+  margin-top: 8px;
+  background: #A8F044;
+  border-color: #A8F044;
+  color: #003024;
+  font-weight: 800;
+}
+
+/* ---- Student stats: full-width stacked cards on small screens ---- */
+@media (max-width: 860px) {
+  .grid-stats.stack-sm { grid-template-columns: minmax(0, 1fr); }
+  .grid-stats.stack-sm > .span-2 { grid-column: auto; }
 }
 
 /* ---- Tab strip: scrolls sideways on small screens ---- */

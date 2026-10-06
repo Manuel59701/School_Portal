@@ -260,8 +260,8 @@ export default function TeacherDashboard({ user, onLogout }) {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
       <nav style={{ backgroundColor: 'white', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container nav-bar" style={{ minHeight: 68 }}>
-          <Crea8orzLogo height={36} />
+        <div className="container nav-bar center-logo" style={{ minHeight: 68 }}>
+          <div className="nav-logo"><Crea8orzLogo height={36} /></div>
 
           <div className="nav-actions" style={{ gap: 20 }}>
             <div className="hide-xs-down" style={{ textAlign: 'right' }}>

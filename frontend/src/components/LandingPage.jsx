@@ -11,8 +11,10 @@ import {
   ArrowRight, 
   Mail, 
   Phone, 
-  MapPin, 
-  Sparkles
+  MapPin,
+  Sparkles,
+  Menu,
+  X
 } from 'lucide-react';
 import Crea8orzLogo from './Crea8orzLogo';
 
@@ -70,6 +72,13 @@ const INITIAL_ANNOUNCEMENTS = [
   }
 ];
 
+const NAV_LINKS = [
+  { href: '#about', label: 'About Us' },
+  { href: '#programs', label: 'Academic Sections' },
+  { href: '#news', label: 'Campus News' },
+  { href: '#newsletter', label: 'Newsletter & Contact' }
+];
+
 export default function LandingPage({ onNavigateLogin }) {
   useScrollReveal();
   const slides = [
@@ -111,6 +120,35 @@ export default function LandingPage({ onNavigateLogin }) {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const headerRef = useRef(null);
+
+  // Close the mobile menu when the viewport grows past the breakpoint,
+  // when tapping outside the header, or with Escape.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+
+    const onResize = () => {
+      if (window.innerWidth > 860) setMenuOpen(false);
+    };
+    const onPointerDown = (event) => {
+      if (headerRef.current && !headerRef.current.contains(event.target)) setMenuOpen(false);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+
+    window.addEventListener('resize', onResize);
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('touchstart', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('touchstart', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [menuOpen]);
 
   // Auto slide loop
   useEffect(() => {
@@ -164,23 +202,22 @@ export default function LandingPage({ onNavigateLogin }) {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
       {/* Navigation Header */}
-      <header style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', boxShadow: '0 4px 15px rgba(0, 48, 36, 0.04)' }}>
+      <header ref={headerRef} style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', boxShadow: '0 4px 15px rgba(0, 48, 36, 0.04)' }}>
         <div className="container nav-bar" style={{ minHeight: 78 }}>
           {/* Logo */}
           <div style={{ cursor: 'pointer', minWidth: 0 }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <Crea8orzLogo height={58} />
           </div>
 
-          {/* Navigation links - hidden on phones, reachable via page scroll */}
+          {/* Navigation links - hidden on phones, replaced by the menu dropdown */}
           <nav className="hide-md-down" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-            <a href="#about" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>About Us</a>
-            <a href="#programs" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Academic Sections</a>
-            <a href="#news" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Campus News</a>
-            <a href="#newsletter" style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>Newsletter & Contact</a>
+            {NAV_LINKS.map((link) => (
+              <a key={link.href} href={link.href} style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>{link.label}</a>
+            ))}
           </nav>
 
-          {/* Action / Login Button */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Action / Login Button (desktop) */}
+          <div className="hide-md-down" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button 
               onClick={onNavigateLogin}
               className="btn btn-lime"
@@ -190,7 +227,39 @@ export default function LandingPage({ onNavigateLogin }) {
               Portal Login
             </button>
           </div>
+
+          {/* Mobile menu toggle */}
+          <button
+            type="button"
+            className="menu-toggle"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-site-menu"
+            onClick={() => setMenuOpen((prev) => !prev)}
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile dropdown: all navbar options + Portal Login */}
+        {menuOpen && (
+          <div className="mobile-menu" id="mobile-site-menu">
+            {NAV_LINKS.map((link) => (
+              <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>
+                {link.label}
+                <ArrowRight size={17} />
+              </a>
+            ))}
+            <button
+              type="button"
+              className="mobile-menu-login"
+              onClick={() => { setMenuOpen(false); onNavigateLogin(); }}
+            >
+              <Users size={18} />
+              Portal Login
+            </button>
+          </div>
+        )}
       </header>
 
       {/* Hero Slideshow Section */}
