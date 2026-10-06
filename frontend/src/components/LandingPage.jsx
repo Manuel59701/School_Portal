@@ -22,6 +22,7 @@ import hero1 from '../assets/images/hero1.jpg';
 import hero2 from '../assets/images/hero2.jpg';
 import hero3 from '../assets/images/hero3.jpg';
 import hero4 from '../assets/images/hero4.jpg';
+import hero5 from '../assets/images/hero5.jpg';
 
 /* ── Scroll-reveal hook ──────────────────────────────────────────── */
 function useScrollReveal() {
@@ -82,7 +83,7 @@ export default function LandingPage({ onNavigateLogin }) {
   useScrollReveal();
   const slides = [
     {
-      image: hero1,
+      image: hero2,
       badge: "Innova8 • Crea8 • Eleva8",
       title: "Nurturing Tomorrow's Creative African Visionaries",
       subtitle: "From Nursery foundations to Senior Secondary, Crea8orz Academy empowers Nigerian scholars with tech innovation, character, and academic mastery.",
@@ -90,7 +91,7 @@ export default function LandingPage({ onNavigateLogin }) {
       tag: "Admissions Open 2026/2027"
     },
     {
-      image: hero2,
+      image: hero3,
       badge: "Smart Tech Classrooms",
       title: "Collaborative Learning With World-Class Nigerian Faculty",
       subtitle: "Interactive digital smart boards, individual tablet learning, and inspiring mentorship designed to unlock every child's full creative genius.",
@@ -98,7 +99,7 @@ export default function LandingPage({ onNavigateLogin }) {
       tag: "Early Years to Senior Secondary"
     },
     {
-      image: hero1,
+      image: hero5,
       badge: "Prestige & Culture",
       title: "Proudly Inspiring Young Leaders Across Nigeria",
       subtitle: "Combining world-standard academic curriculum with African leadership integrity and 21st-century problem-solving skills.",
@@ -106,7 +107,7 @@ export default function LandingPage({ onNavigateLogin }) {
       tag: "Excellence in Action"
     },
     {
-      image: hero2,
+      image: hero4,
       badge: "Future Innovators",
       title: "Coding, Robotics & Creative Arts Excellence",
       subtitle: "Equipping our boys and girls with foundational coding, mathematics, scientific inquiry, and design thinking from day one.",
@@ -402,7 +403,7 @@ export default function LandingPage({ onNavigateLogin }) {
             {/* Visual Mosaic */}
             <div className="reveal reveal-right" style={{ position: 'relative' }}>
               <div style={{ borderRadius: '20px', overflow: 'hidden', boxShadow: 'var(--shadow-xl)', border: '6px solid white' }}>
-                <img src={hero2} alt="Crea8orz Modern Nigerian Classroom" style={{ width: '100%', height: 'clamp(200px, 34vw, 380px)', objectFit: 'cover', display: 'block' }} />
+                <img src={hero5} alt="Crea8orz Modern Nigerian Classroom" style={{ width: '100%', height: 'clamp(200px, 34vw, 380px)', objectFit: 'cover', display: 'block' }} />
               </div>
               <div className="animate-float" style={{ position: 'absolute', bottom: '-24px', left: '-20px', backgroundColor: '#003024', padding: '18px 24px', borderRadius: '16px', boxShadow: 'var(--shadow-lg)', border: '2px solid #A8F044', display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#A8F044', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
@@ -434,7 +435,7 @@ export default function LandingPage({ onNavigateLogin }) {
             {/* Early Childhood / Nursery */}
             <div className="interactive-card reveal reveal-up stagger-1" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
               <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
-                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero2})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero3})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
               </div>
               <div style={{ padding: '28px' }}>
                 <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Early Years Foundation (Nursery)</h3>
@@ -451,7 +452,7 @@ export default function LandingPage({ onNavigateLogin }) {
             {/* Primary Section */}
             <div className="interactive-card reveal reveal-up stagger-2" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
               <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
-                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero5})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
               </div>
               <div style={{ padding: '28px' }}>
                 <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Primary Education (Grades 1 – 6)</h3>
@@ -468,7 +469,7 @@ export default function LandingPage({ onNavigateLogin }) {
             {/* Secondary Section */}
             <div className="interactive-card reveal reveal-up stagger-3" style={{ borderRadius: '18px', border: '1px solid #e2e8e4', overflow: 'hidden', backgroundColor: '#ffffff', boxShadow: 'var(--shadow-sm)' }}>
               <div className="zoom-container" style={{ height: '220px', position: 'relative' }}>
-                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero1})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div className="zoom-image" style={{ width: '100%', height: '100%', backgroundImage: `url(${hero4})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
               </div>
               <div style={{ padding: '28px' }}>
                 <h3 style={{ fontSize: '1.35rem', marginBottom: '12px', color: '#003024' }}>Junior & Senior Secondary (JSS & SSS)</h3>

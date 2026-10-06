@@ -12,6 +12,9 @@ import Crea8orzLogo from './Crea8orzLogo';
 import { buildRoster, classKeyFromStudentId, ROSTER_MIN, ROSTER_MAX } from '../lib/academics';
 import hero1 from '../assets/images/hero1.jpg';
 import hero2 from '../assets/images/hero2.jpg';
+import hero3 from '../assets/images/hero3.jpg';
+import hero4 from '../assets/images/hero4.jpg';
+import hero5 from '../assets/images/hero5.jpg';
 
 const DEMO_CLASS = 'SSS 2 A';
 const DEMO_STUDENT = buildRoster(DEMO_CLASS)[0];
@@ -20,36 +23,28 @@ const STUDENT_TEST_PASSWORD = 'test123';
 /* ─── Slideshow scenes ───────────────────────────────────────────── */
 const SLIDES = [
   {
-    image: hero1,
-    tag: 'Aerial Campus View',
-    tagEmoji: '🛸',
+    image: hero2,
     title: 'Crea8orz Academy',
     subtitle: 'A world-class campus nestled in the heart of Lagos — innovation architecture meets lush greenery.',
     kenBurns: 'kbZoomOut',
     overlay: 'rgba(0,34,26,0.55)'
   },
   {
-    image: hero2,
-    tag: 'Computer & ICT Lab',
-    tagEmoji: '💻',
+    image: hero3,
     title: 'Digital Pioneers',
     subtitle: 'Students code, design AI models, and build web apps in our cutting-edge ICT suites.',
     kenBurns: 'kbPanRight',
     overlay: 'rgba(0,34,26,0.52)'
   },
   {
-    image: hero1,
-    tag: 'Chemistry & Physics Labs',
-    tagEmoji: '⚗️',
+    image: hero4,
     title: 'Science Explorers',
     subtitle: 'Hands-on experiments in fully equipped chemistry and physics labs — safety-certified and world-standard.',
     kenBurns: 'kbZoomIn',
     overlay: 'rgba(0,34,26,0.58)'
   },
   {
-    image: hero2,
-    tag: 'Biology Lab',
-    tagEmoji: '🔬',
+    image: hero5,
     title: 'Future Scientists',
     subtitle: "Microscopes, anatomical models, and live lab work forming Nigeria's next generation of doctors.",
     kenBurns: 'kbPanLeft',
@@ -57,8 +52,6 @@ const SLIDES = [
   },
   {
     image: hero1,
-    tag: 'Sports & Athletics',
-    tagEmoji: '🏃',
     title: 'Champions in the Making',
     subtitle: 'From football and track to swimming and chess — our athletes wear green and lime with pride on every field.',
     kenBurns: 'kbZoomOut',
@@ -288,17 +281,6 @@ export default function LoginPage({ onBackToHome, onLoginSuccess }) {
             animation: 'captionIn 0.65s ease forwards'
           }}
         >
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '8px',
-            backgroundColor: 'rgba(168,240,68,0.16)', backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(168,240,68,0.5)', borderRadius: '30px',
-            padding: '5px 15px', marginBottom: '16px'
-          }}>
-            <span style={{ fontSize: '1rem' }}>{slide.tagEmoji}</span>
-            <span style={{ fontSize: '0.81rem', fontWeight: 800, color: '#A8F044', letterSpacing: '0.05em' }}>
-              {slide.tag}
-            </span>
-          </div>
           <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', marginBottom: '10px', lineHeight: 1.15 }}>
             {slide.title}
           </h2>
