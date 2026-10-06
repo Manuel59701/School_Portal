@@ -26,13 +26,13 @@ export default function StudentDashboard({ user, onLogout }) {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
       <nav className="no-print" style={{ backgroundColor: 'white', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container nav-bar center-logo" style={{ minHeight: 68 }}>
-          <div className="nav-logo"><Crea8orzLogo height={36} /></div>
+        <div className="container nav-bar" style={{ minHeight: 68 }}>
+          <Crea8orzLogo height={36} />
 
           <div className="nav-actions" style={{ gap: 20 }}>
-            <div className="hide-xs-down" style={{ textAlign: 'right' }}>
-              <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#003024' }}>{student.name}</div>
-              <div style={{ fontSize: '0.8rem', color: '#5e7970' }}>{student.studentId} • {classKey}</div>
+            <div className="hide-xs-down nav-user" style={{ textAlign: 'right' }}>
+              <div className="nav-user-name" style={{ fontWeight: 800, color: '#003024' }}>{student.name}</div>
+              <div className="nav-user-sub" style={{ color: '#5e7970' }}>{student.studentId} • {classKey}</div>
             </div>
             <button
               onClick={onLogout}

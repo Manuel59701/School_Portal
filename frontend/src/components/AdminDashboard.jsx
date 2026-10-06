@@ -305,21 +305,22 @@ export default function AdminDashboard({ user, onLogout }) {
       
       {/* Top Header with Crea8orz Deep Green & Lime */}
       <nav style={{ backgroundColor: '#00221a', color: 'white', position: 'sticky', top: 0, zIndex: 50, borderBottom: '2px solid rgba(168, 240, 68, 0.2)' }}>
-          <div className="container nav-bar center-logo" style={{ minHeight: 68 }}>
-            <div className="nav-logo"><Crea8orzLogo height={36} variant="light" /></div>
+          <div className="container nav-bar" style={{ minHeight: 68 }}>
+            <Crea8orzLogo height={36} variant="light" />
 
             <div className="nav-actions" style={{ gap: 20 }}>
-              <div className="hide-xs-down" style={{ textAlign: 'right' }}>
-              <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#ffffff' }}>System Administrator</div>
-              <div style={{ fontSize: '0.8rem', color: '#A8F044' }}>Executive Console Authority</div>
+              <div className="hide-xs-down nav-user" style={{ textAlign: 'right' }}>
+              <div className="nav-user-name" style={{ fontWeight: 800, color: '#ffffff' }}>System Administrator</div>
+              <div className="nav-user-sub" style={{ color: '#A8F044' }}>Executive Console Authority</div>
             </div>
             <button
               onClick={handleResetAll}
               className="btn btn-outline"
               title="Clear every score and published subject in the portal"
+              aria-label="Reset all results"
               style={{ padding: '8px 14px', fontSize: '0.85rem', color: '#fcd34d', borderColor: '#78350f', backgroundColor: 'transparent' }}
             >
-              <RotateCcw size={16} /> Reset Results
+              <RotateCcw size={16} /> <span className="btn-label">Reset Results</span>
             </button>
             <button 
               onClick={onLogout}

@@ -344,6 +344,84 @@ button {
   transform: translateY(-2px);
 }
 
+/* Circular info button — reveals the gradebook helper text on hover or click */
+.info-pop {
+  position: relative;
+  display: inline-flex;
+}
+.info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 48, 36, 0.25);
+  background: rgba(0, 48, 36, 0.06);
+  color: #003024;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.info-btn:hover,
+.info-pop.is-open .info-btn {
+  background: #003024;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+.info-tip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  width: min(340px, 78vw);
+  background: #ffffff;
+  color: #334d44;
+  border: 1px solid #d7e5df;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  font-weight: 500;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: normal;
+  box-shadow: 0 18px 44px -14px rgba(0, 48, 36, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
+  z-index: 30;
+  pointer-events: none;
+}
+.info-pop:hover .info-tip,
+.info-pop.is-open .info-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Small screens: anchor the tooltip to the bottom of the viewport so it is
+   never clipped by the card edge or the screen — it always shows complete. */
+@media (max-width: 640px) {
+  .info-tip {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    top: auto;
+    width: auto;
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transform: translateY(8px);
+  }
+  .info-pop:hover .info-tip,
+  .info-pop.is-open .info-tip {
+    transform: translateY(0);
+  }
+}
+
 /* Badge Styles */
 .badge {
   display: inline-flex;
@@ -492,32 +570,27 @@ html {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  margin-left: auto; /* stays right-aligned even when it wraps to its own row */
 }
 @media (max-width: 640px) {
-  .nav-bar { min-height: 0; gap: 12px; }
-  .nav-actions { width: 100%; }
-  .nav-actions > * { flex: 1 1 auto; }
+  .nav-bar { min-height: 0; gap: 10px; }
+  .nav-actions { gap: 8px; flex-wrap: nowrap; }
+  /* Reset becomes an icon-only button so it lines up with Logout */
+  .nav-actions .btn-label { display: none; }
+  .nav-actions .btn { flex-shrink: 0; }
 }
 
-/* Logo sits in the horizontal centre of the bar on logged-in screens.
-   Desktop: absolutely centred so the action cluster stays right-aligned.
-   Phone: the actions wrap to their own full-width row, so the logo
-   centres itself with auto margins on the first row. */
-.nav-bar.center-logo { position: relative; }
-.nav-bar.center-logo > .nav-logo { display: inline-flex; align-items: center; }
-@media (min-width: 861px) {
-  .nav-bar.center-logo > .nav-logo {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-  }
-}
+/* Logged-in nav user block: logo stays left, name + actions stay right.
+   The name shrinks on narrow screens so the row still fits. */
+.nav-user-name { font-size: 0.92rem; }
+.nav-user-sub  { font-size: 0.8rem; }
 @media (max-width: 860px) {
-  .nav-bar.center-logo { min-height: 0; }
-  .nav-bar.center-logo > .nav-logo { margin: 0 auto; }
-  .nav-bar.center-logo > .nav-actions { width: 100%; justify-content: flex-end; }
+  .nav-user-name { font-size: 0.82rem; }
+  .nav-user-sub  { font-size: 0.7rem; }
+}
+@media (max-width: 640px) {
+  .nav-user-name { font-size: 0.75rem; }
+  .nav-user-sub  { font-size: 0.65rem; }
 }
 
 /* ---- Mobile menu toggle + dropdown (landing page) ----

@@ -8,6 +8,7 @@ import {
   Check,
   GraduationCap,
   AlertCircle,
+  Info,
   RotateCcw,
   X,
   Search,
@@ -33,6 +34,8 @@ import {
   commitSubject,
   getCommittedSubjects,
   sessionKey,
+  setMeta,
+  getMeta,
   clearAllResults
 } from '../lib/portalStore';
 import { SUBJECT_MAX, SCHOOL, withComputed } from '../lib/resultCard';
@@ -93,6 +96,8 @@ export default function TeacherDashboard({ user, onLogout }) {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const noticeTimer = useRef(null);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoPopRef = useRef(null);
 
   const showNotice = (next) => {
     setNotice(next);
@@ -108,6 +113,23 @@ export default function TeacherDashboard({ user, onLogout }) {
   useEffect(() => () => {
     if (noticeTimer.current) clearTimeout(noticeTimer.current);
   }, []);
+
+  // Close the info popover when clicking outside it or pressing Escape.
+  useEffect(() => {
+    if (!infoOpen) return undefined;
+    const onPointerDown = (event) => {
+      if (infoPopRef.current && !infoPopRef.current.contains(event.target)) setInfoOpen(false);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setInfoOpen(false);
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [infoOpen]);
 
   useEffect(() => {
     if (!notice) return undefined;
@@ -132,6 +154,10 @@ export default function TeacherDashboard({ user, onLogout }) {
   const roster = useMemo(() => buildRoster(classKey), [classKey]);
   const committed = useMemo(() => getCommittedSubjects(state, session, classKey), [state, session, classKey]);
   const subjectCommitted = committed.includes(subject);
+  const lastSavedRaw = getMeta('teacherDraftSavedAt', '');
+  const lastSavedLabel = lastSavedRaw
+    ? new Date(lastSavedRaw).toLocaleString([], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+    : '';
 
   const rows = useMemo(
     () =>
@@ -244,7 +270,25 @@ export default function TeacherDashboard({ user, onLogout }) {
     const touched = commitSubject(session, classKey, subject);
     showNotice({
       type: 'success',
+      title: 'Gradebook Committed',
       text: `${subject} committed for ${touched} students in ${classKey} • ${term} ${academicYear}. The progress report card now shows these scores.`
+    });
+  };
+
+  // Save keeps everything typed so far as uncommitted drafts: scores are
+  // already written to the portal store on each keystroke, so this stamps
+  // the checkpoint and confirms the teacher can leave and resume later.
+  const handleSaveDraft = () => {
+    if (enteredCount === 0) {
+      showNotice({ type: 'error', title: 'Nothing To Save', text: `Enter scores for at least one student in ${subject} before saving a draft.` });
+      return;
+    }
+    const savedAt = new Date().toISOString();
+    setMeta('teacherDraftSavedAt', savedAt);
+    showNotice({
+      type: 'success',
+      title: 'Draft Saved',
+      text: `${enteredCount} of ${roster.length} students scored in ${subject} — ${classKey} • ${term} ${academicYear}. Your drafts are stored safely: you can log out and continue from where you stopped. Students will not see these scores until you commit.`
     });
   };
 
@@ -254,27 +298,28 @@ export default function TeacherDashboard({ user, onLogout }) {
     );
     if (!ok) return;
     clearAllResults();
-    showNotice({ type: 'success', text: 'All results cleared. The portal is back to zero scores.' });
+    showNotice({ type: 'success', title: 'Results Cleared', text: 'All results cleared. The portal is back to zero scores.' });
   };
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8faf9', display: 'flex', flexDirection: 'column' }}>
       <nav style={{ backgroundColor: 'white', borderBottom: '2px solid rgba(0, 48, 36, 0.08)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div className="container nav-bar center-logo" style={{ minHeight: 68 }}>
-          <div className="nav-logo"><Crea8orzLogo height={36} /></div>
+        <div className="container nav-bar" style={{ minHeight: 68 }}>
+          <Crea8orzLogo height={36} />
 
           <div className="nav-actions" style={{ gap: 20 }}>
-            <div className="hide-xs-down" style={{ textAlign: 'right' }}>
-              <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#003024' }}>{user?.name || 'Dr. Sarah Adebayo'}</div>
-              <div style={{ fontSize: '0.8rem', color: '#5e7970' }}>Class Master • {subject}</div>
+            <div className="hide-xs-down nav-user" style={{ textAlign: 'right' }}>
+              <div className="nav-user-name" style={{ fontWeight: 800, color: '#003024' }}>{user?.name || 'Dr. Sarah Adebayo'}</div>
+              <div className="nav-user-sub" style={{ color: '#5e7970' }}>Class Master • {subject}</div>
             </div>
             <button
               onClick={handleResetAll}
               className="btn btn-outline"
               title="Clear every score and published subject in the portal"
+              aria-label="Reset all results"
               style={{ padding: '8px 14px', fontSize: '0.85rem', color: '#b45309', borderColor: '#fcd34d' }}
             >
-              <RotateCcw size={16} /> Reset Results
+              <RotateCcw size={16} /> <span className="btn-label">Reset Results</span>
             </button>
             <button
               onClick={onLogout}
@@ -566,12 +611,33 @@ export default function TeacherDashboard({ user, onLogout }) {
                   </div>
                 )}
 
-                <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-                  <span style={{ fontSize: '0.83rem', color: '#5e7970' }}>
-                    Totals and grades recalculate automatically. Committing publishes {subject} to every student&apos;s progress report card in {level} {arm}.
+                <div style={{ marginTop: 24, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                  <span ref={infoPopRef} className={`info-pop${infoOpen ? ' is-open' : ''}`}>
+                    <button
+                      type="button"
+                      className="info-btn"
+                      aria-label="How saving and committing works"
+                      aria-expanded={infoOpen}
+                      title="How saving and committing works"
+                      onClick={() => setInfoOpen((open) => !open)}
+                    >
+                      <Info size={16} />
+                    </button>
+                    <span className="info-tip" role="tooltip">
+                      Totals and grades recalculate automatically. Save keeps your drafts uncommitted so you can leave and resume; committing publishes {subject} to every student&apos;s progress report card in {level} {arm}.
+                      {lastSavedLabel ? ` Last draft saved ${lastSavedLabel}.` : ''}
+                    </span>
                   </span>
+                  <button
+                    onClick={handleSaveDraft}
+                    className="btn btn-primary"
+                    style={{ padding: '12px 22px' }}
+                    title="Save scores without publishing them"
+                  >
+                    <Save size={18} /> Save Draft
+                  </button>
                   <button onClick={handleCommit} className="btn btn-lime" style={{ padding: '12px 26px' }}>
-                    <Save size={18} /> Commit Gradebook Entries
+                    <CheckCircle2 size={18} /> Commit Gradebook Entries
                   </button>
                 </div>
               </div>
@@ -633,7 +699,7 @@ export default function TeacherDashboard({ user, onLogout }) {
                 {notice.type === 'success' ? <CheckCircle2 size={22} /> : <AlertCircle size={22} />}
               </span>
               <span style={{ fontSize: '1rem', fontWeight: 800, color: notice.type === 'success' ? '#003024' : '#b91c1c' }}>
-                {notice.type === 'success' ? 'Gradebook Committed' : 'Nothing To Commit'}
+                {notice.title || (notice.type === 'success' ? 'Gradebook Committed' : 'Nothing To Commit')}
               </span>
             </div>
 
