@@ -411,6 +411,18 @@ html {
   gap: 28px;
   grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
 }
+/* Four-up highlight strip under the hero: always one row of four on wide
+   screens (auto-fit could wrap the fourth card onto a second line). */
+.grid-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 1100px) {
+  .grid-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .grid-strip { grid-template-columns: minmax(0, 1fr); }
+}
 .grid-stats {
   display: grid;
   gap: var(--row-gap);
@@ -508,7 +520,11 @@ html {
   .nav-bar.center-logo > .nav-actions { width: 100%; justify-content: flex-end; }
 }
 
-/* ---- Mobile menu toggle + dropdown (landing page) ---- */
+/* ---- Mobile menu toggle + dropdown (landing page) ----
+   Breakpoint is 960px (not the usual 860px) so wide foldables such as the
+   Galaxy Z Fold 2 (884px CSS viewport) get the dropdown instead of a
+   crowded logo + links + Portal Login row. */
+@media (max-width: 960px) { .hide-lg-down { display: none !important; } }
 .menu-toggle {
   display: none;
   align-items: center;
@@ -523,7 +539,7 @@ html {
   flex-shrink: 0;
 }
 .menu-toggle:active { background-color: rgba(168, 240, 68, 0.25); }
-@media (max-width: 860px) {
+@media (max-width: 960px) {
   .menu-toggle { display: inline-flex; }
 }
 .mobile-menu {

@@ -128,7 +128,7 @@ export default function LandingPage({ onNavigateLogin }) {
     if (!menuOpen) return undefined;
 
     const onResize = () => {
-      if (window.innerWidth > 860) setMenuOpen(false);
+      if (window.innerWidth > 960) setMenuOpen(false);
     };
     const onPointerDown = (event) => {
       if (headerRef.current && !headerRef.current.contains(event.target)) setMenuOpen(false);
@@ -200,15 +200,15 @@ export default function LandingPage({ onNavigateLogin }) {
             <Crea8orzLogo height={58} />
           </div>
 
-          {/* Navigation links - hidden on phones, replaced by the menu dropdown */}
-          <nav className="hide-md-down" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+          {/* Navigation links - hidden below 960px, replaced by the menu dropdown */}
+          <nav className="hide-lg-down" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
             {NAV_LINKS.map((link) => (
               <a key={link.href} href={link.href} style={{ color: '#003024', fontWeight: 600, fontSize: '0.95rem' }}>{link.label}</a>
             ))}
           </nav>
 
-          {/* Action / Login Button (desktop) */}
-          <div className="hide-md-down" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Action / Login Button (desktop only) */}
+          <div className="hide-lg-down" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button 
               onClick={onNavigateLogin}
               className="btn btn-lime"
@@ -324,7 +324,7 @@ export default function LandingPage({ onNavigateLogin }) {
 
       {/* Highlights / Stats strip */}
       <section style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8e4', padding: 'clamp(24px, 4vw, 36px) 0', boxShadow: '0 4px 20px -2px rgba(0, 48, 36, 0.04)' }}>
-        <div className="container grid-cards" style={{ gap: 30 }}>
+        <div className="container grid-strip" style={{ gap: 30 }}>
           <div className="interactive-card reveal reveal-up stagger-1" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '16px', backgroundColor: '#ffffff', border: '1px solid #e2e8e4' }}>
             <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(0, 48, 36, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#003024' }}>
               <Award size={28} />
